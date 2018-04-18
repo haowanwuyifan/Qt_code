@@ -87,6 +87,11 @@ void mainwindow::initialclicked()
 	{
 		connect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
 		time->start(1000);
+		if (!time->isActive())
+		{
+			//time->stop();
+			disconnect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
+		}
 	}
 	
 }
@@ -122,10 +127,16 @@ void mainwindow::insertclicked()
 	QString _in = elem->text();
 	QList<QString> a = _in.split(",");
 	d->avl->Insert(a[0]);
+	d->update();
 	if (a.size() > 1)
 	{
 		connect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
 		time->start(1000);
+		if (!time->isActive())
+		{
+			//time->stop();
+			disconnect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
+		}
 	}
 }
 
@@ -159,9 +170,17 @@ void mainwindow::deleteclicked()
 {
 	QString _de = todelete->text();
 	QList<QString> a = _de.split(",");
+	d->avl->Delete(a[0]);
+	d->update();
 	if (a.size() > 0)
 	{
 		connect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
 		time->start(1000);
+		if (!time->isActive())
+		{
+			//time->stop();
+			disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+		}
 	}
+	
 }
