@@ -184,3 +184,5 @@ void mainwindow::deleteclicked()
 	}
 	
 }
+
+
