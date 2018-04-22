@@ -43,7 +43,8 @@ void DrawWidget::paintEvent(QPaintEvent *)
         _qu.push(t);
         while (_qu.empty())
         {
-            painter.setBrush(Qt::yellow);
+			
+			painter.setBrush(Qt::yellow);
             painter.drawEllipse(30*t->horizontal_position, 100 * t->distance_to_root, 60, 60);
             painter.drawText(30*t->horizontal_position+20, 100 * t->distance_to_root+30, t->element.second);
             if (t->leftchild != NULL)

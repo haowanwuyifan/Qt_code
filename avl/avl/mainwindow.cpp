@@ -10,9 +10,16 @@ mainwindow::mainwindow(QWidget *parent)
 	build->setText("over");
 	connect(build, SIGNAL(clicked()), this, SLOT(initialclicked()));
 
+	find = new QLineEdit(this);
+	search = new QPushButton(this);
+	search->setText("search");
+	connect(search, SIGNAL(clicked()), this, SLOT(searchclicked()));
+
 	QHBoxLayout * hlayout0 = new QHBoxLayout;
 	hlayout0->addWidget(initial);
 	hlayout0->addWidget(build);
+	hlayout0->addWidget(find);
+	hlayout0->addWidget(search);
 
 	elem = new QLineEdit(this);
 	insert = new QPushButton(this);
@@ -184,5 +191,47 @@ void mainwindow::deleteclicked()
 	}
 	
 }
+void mainwindow::searchtimer()
+{
+	QString se = initial->text();
+	QList<QString> a = se.split(",");
+	if (tim < a.size())
+	{
+		true_deletetimer(a);
+		tim++;
+	}
+	else
+	{
+		if (time->isActive())
+		{
+			time->stop();
+			disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+		}
+		tim = 1;
+	}
+}
 
+void mainwindow::true_searchtimer(QList<QString> a)
+{
+	d->avl->Search(a[tim]);
+	d->update();
+}
 
+void mainwindow::searchclicked()
+{
+	QString se = find->text();
+	QList<QString> a = se.split(",");
+	int size = a.size();
+	d->avl->Search(a[0]);
+	d->update();
+	if (a.size() > 1)
+	{
+		connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+		time->start(1000);
+		if (!time->isActive())
+		{
+			//time->stop();
+			disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+		}
+	}
+}

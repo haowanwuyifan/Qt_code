@@ -19,6 +19,7 @@ void AVLtree::buildtree(QList<QString> key,int size)
     root->leftchild = root->rightchild = NULL;
     root->horizontal_position = 0;
     root->distance_to_root = 0;
+	root->sep = 0;
     tsize = 1;
     /*for (int i = 1; i<i_size; i++)
     {
@@ -367,6 +368,7 @@ node* AVLtree::Search(QString _key)
         }
         if (key == current->element.first)
         {
+			current->sep = 1;
             return current;
         }
         if (key < current->element.first/*&&current->leftchild != NULL*/)
@@ -399,6 +401,7 @@ void AVLtree::Insert(QString _key)
             current->leftchild->element.second = _key;
             current->leftchild->n_side = -1;
             current->leftchild->divd = 0;
+			current->leftchild->sep = 0;
             current->leftchild->leftchild = current->leftchild->rightchild = NULL;
             node* t = standard(root);
             if (t->balance == 2)
@@ -436,6 +439,7 @@ void AVLtree::Insert(QString _key)
             current->rightchild->element.second = (char)(key + 96);
             current->rightchild->n_side = -1;
             current->rightchild->divd = 0;
+			current->rightchild->sep = 0;
             current->rightchild->leftchild = current->rightchild->rightchild = NULL;
             node* t = standard(root);
             if (t->balance == 2)
