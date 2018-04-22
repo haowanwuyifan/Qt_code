@@ -43,7 +43,7 @@ public:
     void display();
 	int set_mode(int a);
 	int get_mode();
-	node* path(node* t);
+	int getpath(node* t);
 private:
 	node * root;
 	int height;

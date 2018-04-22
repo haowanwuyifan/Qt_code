@@ -20,6 +20,7 @@ struct node
     int horizontal_position;
     int distance_to_root;
 	int sep;
+	int path;
 };//创建节点类型,包含pair类型的元素，左孩子，右孩子
 
 struct store

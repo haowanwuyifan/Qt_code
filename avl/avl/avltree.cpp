@@ -21,6 +21,7 @@ void AVLtree::buildtree(QList<QString> key,int size)
     root->horizontal_position = 0;
     root->distance_to_root = 0;
 	root->sep = 0;
+	root->path = 0;
     tsize = 1;
     /*for (int i = 1; i<i_size; i++)
     {
@@ -45,6 +46,11 @@ int AVLtree::set_mode(int a)
 int AVLtree::get_mode()
 {
 	return mode;
+}
+
+int AVLtree::getpath(node* t)
+{
+	return t->path;
 }
 
 node* AVLtree::getroot()
@@ -421,6 +427,7 @@ void AVLtree::Insert(QString _key)
             current->leftchild->n_side = -1;
             current->leftchild->divd = 0;
 			current->leftchild->sep = 0;
+			current->leftchild->path = 0;
             current->leftchild->leftchild = current->leftchild->rightchild = NULL;
             node* t = standard(root);
             if (t->balance == 2)
@@ -459,6 +466,7 @@ void AVLtree::Insert(QString _key)
             current->rightchild->n_side = -1;
             current->rightchild->divd = 0;
 			current->rightchild->sep = 0;
+			current->rightchild->path = 0;
             current->rightchild->leftchild = current->rightchild->rightchild = NULL;
             node* t = standard(root);
             if (t->balance == 2)
@@ -938,16 +946,4 @@ void AVLtree::display()
         t = qu.getqueue();
     }
     cout<<endl;
-}
-
-node* path(node* t,int key)
-{
-	if (t->element.first < key)
-	{
-		return t->leftchild;
-	}
-	else if (t->element.first > key)
-	{
-		return t->rightchild;
-	}
 }

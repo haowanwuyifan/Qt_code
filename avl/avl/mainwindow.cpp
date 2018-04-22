@@ -202,12 +202,8 @@ void mainwindow::deleteclicked()
 void mainwindow::searchtimer()
 {
 	QString se = initial->text();
-	QList<QString> a = se.split(",");
-	if (tim < a.size())
-	{
-		true_deletetimer(a);
-		tim++;
-	}
+	
+	
 	else
 	{
 		if (time->isActive())
@@ -228,21 +224,16 @@ void mainwindow::true_searchtimer(QList<QString> a)
 void mainwindow::searchclicked()
 {
 	QString se = find->text();
-	QList<QString> a = se.split(",");
-	int size = a.size();
 	if (d->avl->set_mode(1) == 1)
 	{
-		d->avl->Search(a[0]);
-		d->update();
-		if (a.size() > 1)
+		d->avl->Search(se);
+		
+		connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+		time->start(1000);
+		if (!time->isActive())
 		{
-			connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-			time->start(1000);
-			if (!time->isActive())
-			{
 				//time->stop();
-				disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-			}
+			disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
 		}
 	}
 }
