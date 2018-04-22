@@ -88,19 +88,21 @@ void mainwindow::initialclicked()
 	QString t = initial->text();
 	QList<QString> a = t.split(",");
 	int size = a.size();
-	d->avl->buildtree(a, size);
-	d->update();
-	if (a.size() > 1)
+	if (d->avl->set_mode(0) == 1)
 	{
-		connect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
-		time->start(1000);
-		if (!time->isActive())
+		d->avl->buildtree(a, size);
+		d->update();
+		if (a.size() > 1)
 		{
-			//time->stop();
-			disconnect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
+			connect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
+			time->start(1000);
+			if (!time->isActive())
+			{
+				//time->stop();
+				disconnect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
+			}
 		}
 	}
-	
 }
 
 void mainwindow::inserttimer()
@@ -133,16 +135,19 @@ void mainwindow::insertclicked()
 {
 	QString _in = elem->text();
 	QList<QString> a = _in.split(",");
-	d->avl->Insert(a[0]);
-	d->update();
-	if (a.size() > 1)
+	if (d->avl->set_mode(0) == 1)
 	{
-		connect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
-		time->start(1000);
-		if (!time->isActive())
+		d->avl->Insert(a[0]);
+		d->update();
+		if (a.size() > 1)
 		{
-			//time->stop();
-			disconnect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
+			connect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
+			time->start(1000);
+			if (!time->isActive())
+			{
+				//time->stop();
+				disconnect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
+			}
 		}
 	}
 }
@@ -177,20 +182,23 @@ void mainwindow::deleteclicked()
 {
 	QString _de = todelete->text();
 	QList<QString> a = _de.split(",");
-	d->avl->Delete(a[0]);
-	d->update();
-	if (a.size() > 0)
+	if (d->avl->set_mode(0) == 1)
 	{
-		connect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
-		time->start(1000);
-		if (!time->isActive())
+		d->avl->Delete(a[0]);
+		d->update();
+		if (a.size() > 0)
 		{
-			//time->stop();
-			disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+			connect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+			time->start(1000);
+			if (!time->isActive())
+			{
+				//time->stop();
+				disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+			}
 		}
 	}
-	
 }
+
 void mainwindow::searchtimer()
 {
 	QString se = initial->text();
@@ -222,16 +230,19 @@ void mainwindow::searchclicked()
 	QString se = find->text();
 	QList<QString> a = se.split(",");
 	int size = a.size();
-	d->avl->Search(a[0]);
-	d->update();
-	if (a.size() > 1)
+	if (d->avl->set_mode(1) == 1)
 	{
-		connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-		time->start(1000);
-		if (!time->isActive())
+		d->avl->Search(a[0]);
+		d->update();
+		if (a.size() > 1)
 		{
-			//time->stop();
-			disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+			connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+			time->start(1000);
+			if (!time->isActive())
+			{
+				//time->stop();
+				disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+			}
 		}
 	}
 }

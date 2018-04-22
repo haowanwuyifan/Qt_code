@@ -5,6 +5,7 @@ AVLtree::AVLtree()
 {
     root = NULL;
 	tsize = 0;
+	mode = -1;
 }
 
 void AVLtree::buildtree(QList<QString> key,int size)
@@ -26,6 +27,24 @@ void AVLtree::buildtree(QList<QString> key,int size)
         Insert(key[i]);
     }*/
 
+}
+
+int AVLtree::set_mode(int a)
+{
+	mode = a;
+	if (mode == a)
+	{
+		return 1;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+int AVLtree::get_mode()
+{
+	return mode;
 }
 
 node* AVLtree::getroot()
@@ -919,4 +938,16 @@ void AVLtree::display()
         t = qu.getqueue();
     }
     cout<<endl;
+}
+
+node* path(node* t,int key)
+{
+	if (t->element.first < key)
+	{
+		return t->leftchild;
+	}
+	else if (t->element.first > key)
+	{
+		return t->rightchild;
+	}
 }

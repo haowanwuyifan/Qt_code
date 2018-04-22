@@ -41,11 +41,15 @@ public:
     void updateDistanceToRoot(node* x);
     node* succ(node *x);
     void display();
+	int set_mode(int a);
+	int get_mode();
+	node* path(node* t);
 private:
 	node * root;
 	int height;
 	int tsize;
 	int i_size;
+	int mode;
 };
 
 
