@@ -53,6 +53,16 @@ int AVLtree::getpath(node* t)
 	return t->path;
 }
 
+void AVLtree::setpath(node* t)
+{
+	t->path = 1;
+}
+
+void AVLtree::removepath(node* t)
+{
+	t->path = 0;
+}
+
 node* AVLtree::getroot()
 {
     return root;

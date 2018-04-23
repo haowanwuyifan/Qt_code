@@ -21,11 +21,11 @@ public:
 	DrawWidget *d;
 	QTimer *time;
 	int tim;
+	node* temp;
 	mainwindow(QWidget *parent = Q_NULLPTR);
 	void true_buildtimer(QList<QString> a);
 	void true_inserttimer(QList<QString> a);
 	void true_deletetimer(QList<QString> a);
-	void true_searchtimer(QList<QString> a);
 
 private slots:
 	void insertclicked();

@@ -50,7 +50,6 @@ mainwindow::mainwindow(QWidget *parent)
 
 	time = new QTimer(this);
 	tim = 1;
-
 	QWidget *widget = new QWidget(this);
 	widget->setLayout(vlayout);
 
@@ -88,8 +87,7 @@ void mainwindow::initialclicked()
 	QString t = initial->text();
 	QList<QString> a = t.split(",");
 	int size = a.size();
-	if (d->avl->set_mode(0) == 1)
-	{
+	
 		d->avl->buildtree(a, size);
 		d->update();
 		if (a.size() > 1)
@@ -102,7 +100,7 @@ void mainwindow::initialclicked()
 				disconnect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
 			}
 		}
-	}
+		
 }
 
 void mainwindow::inserttimer()
@@ -135,8 +133,7 @@ void mainwindow::insertclicked()
 {
 	QString _in = elem->text();
 	QList<QString> a = _in.split(",");
-	if (d->avl->set_mode(0) == 1)
-	{
+	
 		d->avl->Insert(a[0]);
 		d->update();
 		if (a.size() > 1)
@@ -149,7 +146,7 @@ void mainwindow::insertclicked()
 				disconnect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
 			}
 		}
-	}
+	
 }
 
 void mainwindow::deletetimer()
@@ -182,8 +179,7 @@ void mainwindow::deleteclicked()
 {
 	QString _de = todelete->text();
 	QList<QString> a = _de.split(",");
-	if (d->avl->set_mode(0) == 1)
-	{
+	
 		d->avl->Delete(a[0]);
 		d->update();
 		if (a.size() > 0)
@@ -196,44 +192,82 @@ void mainwindow::deleteclicked()
 				disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
 			}
 		}
-	}
+	
 }
 
 void mainwindow::searchtimer()
 {
-	QString se = initial->text();
-	
-	
-	else
+	QString se = find->text();
+	node* sta = d->avl->Search(se);
+	d->update();
+	if (temp == sta)
 	{
+		d->avl->removepath(temp);
+		temp = d->avl->getroot();
 		if (time->isActive())
 		{
 			time->stop();
 			disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
 		}
-		tim = 1;
 	}
-}
-
-void mainwindow::true_searchtimer(QList<QString> a)
-{
-	d->avl->Search(a[tim]);
-	d->update();
+	else
+	{
+		if (sta->element.first < temp->element.first)
+		{
+			d->avl->removepath(temp);
+			if (temp->leftchild != NULL)
+			{
+				temp = temp->leftchild;
+				d->avl->setpath(temp);
+			}
+			else
+			{
+				if (time->isActive())
+				{
+					time->stop();
+					disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+				}
+				d->avl->removepath(temp);
+				temp = d->avl->getroot();
+				
+			}
+		}
+		else if (sta->element.first > temp->element.first)
+		{
+			d->avl->removepath(temp);
+			if (temp->rightchild != NULL)
+			{
+				temp = temp->rightchild;
+				d->avl->setpath(temp);
+			}
+			else
+			{
+				if (time->isActive())
+				{
+					time->stop();
+					disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+				}
+				d->avl->removepath(temp);
+				temp = d->avl->getroot();
+				
+			}
+		}
+	}
 }
 
 void mainwindow::searchclicked()
 {
-	QString se = find->text();
-	if (d->avl->set_mode(1) == 1)
+	//QString se = find->text();
+	d->update();
+	temp = d->avl->getroot();
+	d->avl->setpath(temp);
+	d->update();
+	connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+	time->start(1000);
+	if (!time->isActive())
 	{
-		d->avl->Search(se);
-		
-		connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-		time->start(1000);
-		if (!time->isActive())
-		{
 				//time->stop();
-			disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-		}
+		disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
 	}
+	
 }

@@ -44,6 +44,8 @@ public:
 	int set_mode(int a);
 	int get_mode();
 	int getpath(node* t);
+	void setpath(node* t);
+	void removepath(node* t);
 private:
 	node * root;
 	int height;
