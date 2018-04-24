@@ -3,6 +3,8 @@
 #include <QtWidgets/QMainWindow>
 #include <QLineEdit>
 #include <QPushButton>
+#include<qradiobutton.h>
+#include<qbuttongroup.h>
 #include<QTimer>
 #include"mydraw.h"
 class mainwindow : public QMainWindow
@@ -18,6 +20,9 @@ public:
 	QPushButton *buttondelete;
 	QLineEdit* find;
 	QPushButton* search;
+	QButtonGroup* modeselect;
+	QRadioButton* normal;
+	QRadioButton* abnormal;
 	DrawWidget *d;
 	QTimer *time;
 	int tim;
@@ -36,4 +41,6 @@ private slots:
 	void inserttimer();
 	void deletetimer();
 	void searchtimer();
+	//void tolgclikced(int id, bool status);
+	void btnclicked(int id);
 };

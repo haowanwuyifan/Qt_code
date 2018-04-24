@@ -18,7 +18,6 @@ public:
 	void Ascend(node* t);						//升序输出
 	void getbalance(node* t);					//计算平衡因子
 	int getheight(node* t);						//计算树的高度
-	void test();								//测试用函数
 	node* getroot();							//得到节点
 	node* standard(node* t);					//标准化AVL树
 	int gettsize();								//得到长度
@@ -46,6 +45,10 @@ public:
 	int getpath(node* t);
 	void setpath(node* t);
 	void removepath(node* t);
+	void setindex(node* t);
+	void Search_(int x);
+	void _Delete(int x);
+	friend void Temp(AVLtree* av, node* t);
 private:
 	node * root;
 	int height;

@@ -5,6 +5,21 @@
 mainwindow::mainwindow(QWidget *parent)
 	: QMainWindow(parent)
 {
+	modeselect = new QButtonGroup(this);
+	normal = new QRadioButton(this);
+	normal->setText("normal");
+	abnormal = new QRadioButton(this);
+	abnormal->setText("index");
+	modeselect->addButton(normal, 1);
+	modeselect->addButton(abnormal, 2);
+	normal->setChecked(true);
+	connect(modeselect, SIGNAL(buttonToggled(int, bool)), this, SLOT(tolgclikced(int, bool)));
+	connect(modeselect, SIGNAL(buttonClicked(int)), this, SLOT(btnclicked(int)));
+
+	QHBoxLayout * hlayouts = new QHBoxLayout;
+	hlayouts->addWidget(normal);
+	hlayouts->addWidget(abnormal);
+
 	initial = new QLineEdit(this);
 	build = new QPushButton(this);
 	build->setText("over");
@@ -43,6 +58,7 @@ mainwindow::mainwindow(QWidget *parent)
 
 	QVBoxLayout *vlayout = new QVBoxLayout;
 	d = new DrawWidget(this);
+	vlayout->addLayout(hlayouts);
 	vlayout->addLayout(hlayout0);
 	vlayout->addLayout(hlayout1);
 	vlayout->addLayout(hlayout2);
@@ -79,6 +95,7 @@ void mainwindow::buildtimer()
 void mainwindow::true_buildtimer(QList<QString> a)
 {
 	d->avl->Insert(a[tim]);
+	Temp(d->avl, d->avl->getroot());
 	d->update();
 }
 
@@ -126,6 +143,7 @@ void mainwindow::inserttimer()
 void mainwindow::true_inserttimer(QList<QString> a)
 {
 	d->avl->Insert(a[tim]);
+	Temp(d->avl, d->avl->getroot());
 	d->update();
 }
 
@@ -135,6 +153,7 @@ void mainwindow::insertclicked()
 	QList<QString> a = _in.split(",");
 	
 		d->avl->Insert(a[0]);
+		Temp(d->avl, d->avl->getroot());
 		d->update();
 		if (a.size() > 1)
 		{
@@ -172,6 +191,7 @@ void mainwindow::deletetimer()
 void mainwindow::true_deletetimer(QList<QString> a)
 {
 	d->avl->Delete(a[tim]);
+	Temp(d->avl, d->avl->getroot());
 	d->update();
 }
 
@@ -181,6 +201,7 @@ void mainwindow::deleteclicked()
 	QList<QString> a = _de.split(",");
 	
 		d->avl->Delete(a[0]);
+		Temp(d->avl, d->avl->getroot());
 		d->update();
 		if (a.size() > 0)
 		{
@@ -257,17 +278,44 @@ void mainwindow::searchtimer()
 
 void mainwindow::searchclicked()
 {
-	//QString se = find->text();
-	d->update();
-	temp = d->avl->getroot();
-	d->avl->setpath(temp);
-	d->update();
-	connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-	time->start(1000);
-	if (!time->isActive())
+	if (d->avl->get_mode() == 0)
 	{
+		QString se = find->text();
+		node* st = d->avl->Search(se);
+		if (st == NULL)
+		{
+			exit;
+		}
+		else
+		{
+			d->update();
+			temp = d->avl->getroot();
+			d->avl->setpath(temp);
+			d->update();
+			connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+			time->start(1000);
+			if (!time->isActive())
+			{
 				//time->stop();
-		disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+				disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+			}
+		}
 	}
-	
+	else if (d->avl->get_mode() == 1)
+	{
+		QString se = find->text();
+		int num = se.toInt();
+	}
+}
+
+void mainwindow::btnclicked(int id)
+{
+	if (id == 1)
+	{
+		d->avl->set_mode(0);
+	}
+	else if (id == 2)
+	{
+		d->avl->set_mode(1);
+	}
 }

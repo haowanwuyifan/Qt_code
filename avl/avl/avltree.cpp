@@ -5,7 +5,7 @@ AVLtree::AVLtree()
 {
     root = NULL;
 	tsize = 0;
-	mode = -1;
+	mode = 0;
 }
 
 void AVLtree::buildtree(QList<QString> key,int size)
@@ -22,6 +22,7 @@ void AVLtree::buildtree(QList<QString> key,int size)
     root->distance_to_root = 0;
 	root->sep = 0;
 	root->path = 0;
+	root->index = 0;
     tsize = 1;
     /*for (int i = 1; i<i_size; i++)
     {
@@ -66,21 +67,6 @@ void AVLtree::removepath(node* t)
 node* AVLtree::getroot()
 {
     return root;
-}
-
-void AVLtree::test()
-{
-    node* m = root/*->rightchild->leftchild*/;
-    try
-    {
-        //node* t = iterator(root, m);
-        cout << m->balance << endl;
-    }
-    catch (const char* msg)
-    {
-        cout << msg << endl;
-    }
-
 }
 
 int AVLtree::gettsize()
@@ -744,17 +730,14 @@ void AVLtree::divide(node* t, AVLtree &b)
     }
 }
 
-void Temp(AVLtree av, void (AVLtree::*function)(int), node* t)
+void Temp(AVLtree* av,node* t)
 {
-    Queue qu(av.gettsize());
+    Queue qu(av->gettsize());
     qu.createqueue();
     qu.push(t);
     while (qu.empty())
     {
-        if (t->divd = 1)
-        {
-            (av.*function)(t->element.first);
-        }
+		av->setindex(t);
         if (t->leftchild != NULL)
         {
             qu.push(t->leftchild);
@@ -956,4 +939,58 @@ void AVLtree::display()
         t = qu.getqueue();
     }
     cout<<endl;
+}
+
+void AVLtree::setindex(node* t)
+{
+	int count = 0;
+	if (t->leftchild != NULL)
+	{
+		node* ct = t->leftchild;
+		Queue _qu(gettsize());
+		_qu.createqueue();
+		_qu.push(ct);
+		while (_qu.empty())
+		{
+			count++;
+			if (ct->leftchild != NULL)
+			{
+				_qu.push(ct->leftchild);
+			}
+			if (ct->rightchild != NULL)
+			{
+				_qu.push(ct->rightchild);
+			}
+			_qu.pop();
+			ct = _qu.getqueue();
+		}
+	}
+	node* parent = iterator(root, t);
+	if (parent != NULL && parent != t)
+	{
+		if (parent->n_side == 0)
+		{
+			if (t->element.first > root->element.first)
+			{
+				count = count + parent->index;
+			}
+		}
+		else if (parent->n_side == 1)
+		{
+			count = count + parent->index + 1;
+		}
+		
+	}
+	t->index = count;
+
+}
+
+void AVLtree::Search_(int x)
+{
+
+}
+
+void AVLtree::_Delete(int x)
+{
+
 }

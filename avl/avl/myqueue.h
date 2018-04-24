@@ -21,6 +21,7 @@ struct node
     int distance_to_root;
 	int sep;
 	int path;
+	int index;
 };//创建节点类型,包含pair类型的元素，左孩子，右孩子
 
 struct store

@@ -53,7 +53,14 @@ void DrawWidget::paintEvent(QPaintEvent *)
 				painter.setBrush(Qt::yellow);
 			}
 			painter.drawEllipse(30 * t->horizontal_position, 100 * t->distance_to_root, 60, 60);
-			painter.drawText(30 * t->horizontal_position + 20, 100 * t->distance_to_root + 30, t->element.second);
+			if (avl->get_mode() == 0)
+			{
+				painter.drawText(30 * t->horizontal_position + 20, 100 * t->distance_to_root + 30, t->element.second);
+			}
+			else if (avl->get_mode() == 1)
+			{
+				painter.drawText(30 * t->horizontal_position + 20, 100 * t->distance_to_root + 30, t->element.second + " " + QString::number(t->index, 10));
+			}
 			if (t->leftchild != NULL)
 			{
 				_qu.push(t->leftchild);
