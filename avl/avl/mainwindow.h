@@ -27,7 +27,13 @@ public:
 	QRadioButton* normal;
 	QRadioButton* abnormal;
 	QPushButton* ascend;
+	QPushButton* merge;
+	QLineEdit* diin;
+	QPushButton* divide;
+	QLineEdit* merinp;
+	DrawWidget* c;
 	DrawWidget *d;
+	DrawWidget* e;
 	QTimer *time;
 	QDialog* p;
 	int tim;
@@ -36,6 +42,8 @@ public:
 	void true_buildtimer(QList<QString> a);
 	void true_inserttimer(QList<QString> a);
 	void true_deletetimer(QList<QString> a);
+	void true_mergetimer(QList<QString> a);
+	void true_dividetimer(QList<QString> a);
 	void mode_change(int id);
 	int deabnormal(QList<QString> a);
 
@@ -45,6 +53,8 @@ private slots:
 	void initialclicked();
 	void searchclicked();
 	void ascendclicked();
+	void mergetimer();
+	void dividetimer();
 	void ascendtimer();
 	void buildtimer();
 	void inserttimer();
@@ -53,4 +63,6 @@ private slots:
 	void tolgclikced(int id, bool status);
 	void btnclicked(int id);
 	void restart();
+	void mergeclicked();
+	void divideclicked();
 };

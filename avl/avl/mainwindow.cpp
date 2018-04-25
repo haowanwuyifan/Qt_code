@@ -60,6 +60,25 @@ mainwindow::mainwindow(QWidget *parent)
 	hlayout1->addWidget(todelete);
 	hlayout1->addWidget(buttondelete);
 
+	divide = new QPushButton(this);
+	diin = new QLineEdit(this);
+	divide->setText("divide");
+	c = new DrawWidget(this);
+	QHBoxLayout * hlayout3 = new QHBoxLayout;
+	hlayout3->addWidget(diin);
+	hlayout3->addWidget(divide);
+
+	merge = new QPushButton(this);
+	merinp = new QLineEdit(this);
+	merge->setText("merge");
+	e = new DrawWidget(this);
+	QHBoxLayout * hlayout4 = new QHBoxLayout;
+	hlayout4->addWidget(merinp);
+	hlayout4->addWidget(merge);
+
+	QHBoxLayout * hlayout5 = new QHBoxLayout;
+	hlayout5->addLayout(hlayout3);
+	hlayout5->addLayout(hlayout4);
 
 	QVBoxLayout *vlayout = new QVBoxLayout;
 	d = new DrawWidget(this);
@@ -67,6 +86,7 @@ mainwindow::mainwindow(QWidget *parent)
 	vlayout->addLayout(hlayout0);
 	vlayout->addLayout(hlayout1);
 	vlayout->addLayout(hlayout2);
+	vlayout->addLayout(hlayout5);
 	vlayout->addWidget(d);
 
 	time = new QTimer(this);
