@@ -732,23 +732,26 @@ void AVLtree::divide(node* t, AVLtree &b)
 
 void Temp(AVLtree* av,node* t)
 {
-    Queue qu(av->gettsize());
-    qu.createqueue();
-    qu.push(t);
-    while (qu.empty())
-    {
-		av->setindex(t);
-        if (t->leftchild != NULL)
-        {
-            qu.push(t->leftchild);
-        }
-        if (t->rightchild != NULL)
-        {
-            qu.push(t->rightchild);
-        }
-        qu.pop();
-        t = qu.getqueue();
-    }
+	if (t != NULL)
+	{
+		Queue qu(av->gettsize());
+		qu.createqueue();
+		qu.push(t);
+		while (qu.empty())
+		{
+			av->setindex(t);
+			if (t->leftchild != NULL)
+			{
+				qu.push(t->leftchild);
+			}
+			if (t->rightchild != NULL)
+			{
+				qu.push(t->rightchild);
+			}
+			qu.pop();
+			t = qu.getqueue();
+		}
+	}
 }
 
 bool AVLtree::empty()
@@ -944,53 +947,174 @@ void AVLtree::display()
 void AVLtree::setindex(node* t)
 {
 	int count = 0;
-	if (t->leftchild != NULL)
+	if (t != NULL)
 	{
-		node* ct = t->leftchild;
-		Queue _qu(gettsize());
-		_qu.createqueue();
-		_qu.push(ct);
-		while (_qu.empty())
+		if (t->leftchild != NULL)
 		{
-			count++;
-			if (ct->leftchild != NULL)
+			node* ct = t->leftchild;
+			Queue _qu(gettsize());
+			_qu.createqueue();
+			_qu.push(ct);
+			while (_qu.empty())
 			{
-				_qu.push(ct->leftchild);
-			}
-			if (ct->rightchild != NULL)
-			{
-				_qu.push(ct->rightchild);
-			}
-			_qu.pop();
-			ct = _qu.getqueue();
-		}
-	}
-	node* parent = iterator(root, t);
-	if (parent != NULL && parent != t)
-	{
-		if (parent->n_side == 0)
-		{
-			if (t->element.first > root->element.first)
-			{
-				count = count + parent->index;
+				count++;
+				if (ct->leftchild != NULL)
+				{
+					_qu.push(ct->leftchild);
+				}
+				if (ct->rightchild != NULL)
+				{
+					_qu.push(ct->rightchild);
+				}
+				_qu.pop();
+				ct = _qu.getqueue();
 			}
 		}
-		else if (parent->n_side == 1)
+		node* parent = iterator(root, t);
+		if (parent != NULL && parent != t)
 		{
-			count = count + parent->index + 1;
-		}
-		
-	}
-	t->index = count;
+			if (parent->n_side == 0)
+			{
+				if (t->element.first > root->element.first)
+				{
+					count = count + parent->index - count - 1;
+				}
+			}
+			else if (parent->n_side == 1)
+			{
+				count = count + parent->index + 1;
+			}
 
+		}
+		t->index = count;
+	}
 }
 
-void AVLtree::Search_(int x)
+node* AVLtree::Search_(int x)
 {
-
+	node* t = root;
+	Queue qu(gettsize());
+	qu.createqueue();
+	qu.push(t);
+	while (qu.empty())
+	{
+		if (t->index + 1 == x)
+		{
+			t->sep = 1;
+			return t;
+		}
+		if (t->leftchild != NULL)
+		{
+			qu.push(t->leftchild);
+		}
+		if (t->rightchild != NULL)
+		{
+			qu.push(t->rightchild);
+		}
+		qu.pop();
+		t = qu.getqueue();
+	}
 }
 
 void AVLtree::_Delete(int x)
 {
-
+	
+	node* t = Search_(x);
+	if (t != NULL)
+	{
+		int key = t->element.first;
+		node* parent = iterator(root, t);
+		erase(key);
+		getbalance(parent);
+		if (t == parent)
+		{
+			parent = root;
+		}
+		if (root == NULL)
+		{
+			return;
+		}
+		if (parent->balance == 1 || parent->balance == -1)
+		{
+			return;
+		}
+		if (parent->balance == 2 || parent->balance == -2)
+		{
+			node* t = standard(parent);
+			if (t->balance == 2)
+			{
+				if (t->leftchild->balance == 1 || t->leftchild->balance == 0)
+				{
+					l_lroll(t);
+				}
+				else if (t->leftchild->balance == -1)
+				{
+					l_rroll(t);
+				}
+			}
+			if (t->balance == -2)
+			{
+				if (t->rightchild->balance == 1 || t->rightchild->balance == 0)
+				{
+					r_lroll(t);
+				}
+				else if (t->rightchild->balance == -1)
+				{
+					r_rroll(t);
+				}
+			}
+		}
+		if (parent->balance == 0)
+		{
+			node* grand = standard(root);
+			if (grand->balance == 2)
+			{
+				if (grand->leftchild->balance == 1)
+				{
+					l_lroll(grand);
+				}
+				else if (grand->leftchild->balance == -1)
+				{
+					l_rroll(grand);
+				}
+			}
+			if (grand->balance == -2)
+			{
+				if (grand->rightchild->balance == 1)
+				{
+					r_lroll(grand);
+				}
+				else if (grand->rightchild->balance == -1)
+				{
+					r_rroll(grand);
+				}
+			}
+		}
+		if (t == root)
+		{
+			node* t = standard(root);
+			if (t->balance == 2)
+			{
+				if (t->leftchild->balance == 1)
+				{
+					l_lroll(t);
+				}
+				else if (t->leftchild->balance == -1)
+				{
+					l_rroll(t);
+				}
+			}
+			if (t->balance == -2)
+			{
+				if (t->rightchild->balance == 1)
+				{
+					r_lroll(t);
+				}
+				else if (t->rightchild->balance == -1)
+				{
+					r_rroll(t);
+				}
+			}
+		}
+	}
 }

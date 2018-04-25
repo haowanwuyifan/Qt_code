@@ -16,9 +16,14 @@ mainwindow::mainwindow(QWidget *parent)
 	connect(modeselect, SIGNAL(buttonToggled(int, bool)), this, SLOT(tolgclikced(int, bool)));
 	connect(modeselect, SIGNAL(buttonClicked(int)), this, SLOT(btnclicked(int)));
 
+	ascend = new QPushButton(this);
+	ascend->setText("Ascend");
+	connect(ascend, SIGNAL(clicked()), this, SLOT(ascendclicked()));
+
 	QHBoxLayout * hlayouts = new QHBoxLayout;
 	hlayouts->addWidget(normal);
 	hlayouts->addWidget(abnormal);
+	hlayouts->addWidget(ascend);
 
 	initial = new QLineEdit(this);
 	build = new QPushButton(this);
@@ -70,6 +75,40 @@ mainwindow::mainwindow(QWidget *parent)
 	widget->setLayout(vlayout);
 
 	this->setCentralWidget(widget);
+
+	p = new QDialog(this);
+	p->resize(300,200);
+	QPushButton* pb = new QPushButton(p);
+	pb->setText("OK");
+	connect(pb, SIGNAL(clicked()), this, SLOT(restart()));
+	QLabel* pt = new QLabel(p);
+	pt->setText("error!");
+	QVBoxLayout *vlayouts = new QVBoxLayout(p);
+	vlayouts->addWidget(pt);
+	vlayouts->addWidget(pb);
+}
+
+int mainwindow::deabnormal(QList<QString> a)
+{
+	for (int i = 0; i < a.size(); i++)
+	{
+		if (a[i].length() != 1)
+		{
+			return -1;
+		}
+		else
+		{
+			for (int j = 0; j < i; j++)
+			{
+				if (a[i].contains(a[j], Qt::CaseInsensitive))
+				{
+					return -1;
+				}
+			}
+			
+		}
+	}
+	return 1;
 }
 
 void mainwindow::buildtimer()
@@ -104,7 +143,13 @@ void mainwindow::initialclicked()
 	QString t = initial->text();
 	QList<QString> a = t.split(",");
 	int size = a.size();
-	
+	if (deabnormal(a) == -1)
+	{
+		p->setModal(true);
+		p->show();
+	}
+	else
+	{
 		d->avl->buildtree(a, size);
 		d->update();
 		if (a.size() > 1)
@@ -117,6 +162,8 @@ void mainwindow::initialclicked()
 				disconnect(time, SIGNAL(timeout()), this, SLOT(buildtimer()));
 			}
 		}
+	}
+		
 		
 }
 
@@ -151,7 +198,13 @@ void mainwindow::insertclicked()
 {
 	QString _in = elem->text();
 	QList<QString> a = _in.split(",");
-	
+	if (deabnormal(a) == -1)
+	{
+		p->setModal(true);
+		p->show();
+	}
+	else
+	{
 		d->avl->Insert(a[0]);
 		Temp(d->avl, d->avl->getroot());
 		d->update();
@@ -165,11 +218,12 @@ void mainwindow::insertclicked()
 				disconnect(time, SIGNAL(timeout()), this, SLOT(inserttimer()));
 			}
 		}
-	
+	}
 }
 
 void mainwindow::deletetimer()
 {
+	
 	QString _de = todelete->text();
 	QList<QString> a = _de.split(",");
 	if (tim < a.size())
@@ -184,93 +238,216 @@ void mainwindow::deletetimer()
 			time->stop();
 			disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
 		}
-		tim = 1;
+	tim = 1;
 	}
 }
 
 void mainwindow::true_deletetimer(QList<QString> a)
 {
-	d->avl->Delete(a[tim]);
-	Temp(d->avl, d->avl->getroot());
-	d->update();
+	if (d->avl->get_mode() == 0)
+	{
+		d->avl->Delete(a[tim]);
+		Temp(d->avl, d->avl->getroot());
+		d->update();
+	}
+	else if (d->avl->get_mode() == 1)
+	{
+		d->avl->_Delete(a[tim].toInt());
+		Temp(d->avl, d->avl->getroot());
+		d->update();
+	}
 }
 
 void mainwindow::deleteclicked()
 {
-	QString _de = todelete->text();
-	QList<QString> a = _de.split(",");
-	
-		d->avl->Delete(a[0]);
-		Temp(d->avl, d->avl->getroot());
-		d->update();
-		if (a.size() > 0)
+	if (d->avl->get_mode() == 0)
+	{
+		QString _de = todelete->text();
+		QList<QString> a = _de.split(",");
+		if (deabnormal(a) == -1)
 		{
-			connect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
-			time->start(1000);
-			if (!time->isActive())
+			p->setModal(true);
+			p->show();
+		}
+		else
+		{
+			d->avl->Delete(a[0]);
+			Temp(d->avl, d->avl->getroot());
+			d->update();
+			if (a.size() > 0)
 			{
-				//time->stop();
-				disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+				connect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+				time->start(1000);
+				if (!time->isActive())
+				{
+					//time->stop();
+					disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+				}
 			}
 		}
+	}
+	else if (d->avl->get_mode() == 1)
+	{
+		Temp(d->avl, d->avl->getroot());
+		QString _de = todelete->text();
+		QList<QString> a = _de.split(",");
+		if (deabnormal(a) == -1)
+		{
+			p->setModal(true);
+			p->show();
+		}
+		else
+		{
+			int* n = new int[a.size()];
+			for (int i = 0; i < a.size(); i++)
+			{
+				n[i] = a[i].toInt();
+				if (n[i] <= 0)
+				{
+					p->setModal(true);
+					p->show();
+				}
+			}
+			d->avl->_Delete(n[0]);
+			Temp(d->avl, d->avl->getroot());
+			d->update();
+			if (a.size() > 0)
+			{
+				connect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+				time->start(1000);
+				if (!time->isActive())
+				{
+					//time->stop();
+					disconnect(time, SIGNAL(timeout()), this, SLOT(deletetimer()));
+				}
+			}
+		}
+	}
 	
 }
 
 void mainwindow::searchtimer()
 {
-	QString se = find->text();
-	node* sta = d->avl->Search(se);
-	d->update();
-	if (temp == sta)
+	if (d->avl->get_mode() == 0)
 	{
-		d->avl->removepath(temp);
-		temp = d->avl->getroot();
-		if (time->isActive())
+		QString se = find->text();
+		node* sta = d->avl->Search(se);
+		d->update();
+		if (temp == sta)
 		{
-			time->stop();
-			disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+			//d->avl->removepath(temp);
+			//temp = d->avl->getroot();
+			if (time->isActive())
+			{
+				time->stop();
+				disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+			}
+		}
+		else
+		{
+			if (sta->element.first < temp->element.first)
+			{
+				d->avl->removepath(temp);
+				if (temp->leftchild != NULL)
+				{
+					temp = temp->leftchild;
+					d->avl->setpath(temp);
+				}
+				else
+				{
+					d->avl->removepath(temp);
+					temp = d->avl->getroot();
+					if (time->isActive())
+					{
+						time->stop();
+						disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+					}
+					
+
+				}
+			}
+			else if (sta->element.first > temp->element.first)
+			{
+				d->avl->removepath(temp);
+				if (temp->rightchild != NULL)
+				{
+					temp = temp->rightchild;
+					d->avl->setpath(temp);
+				}
+				else
+				{
+					d->avl->removepath(temp);
+					temp = d->avl->getroot();
+					if (time->isActive())
+					{
+						time->stop();
+						disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+					}
+					
+
+				}
+			}
 		}
 	}
-	else
+	else if (d->avl->get_mode() == 1)
 	{
-		if (sta->element.first < temp->element.first)
+		QString se = find->text();
+		int num = se.toInt();
+		node* sta = d->avl->Search_(num);
+		d->update();
+		if (temp == sta)
 		{
-			d->avl->removepath(temp);
-			if (temp->leftchild != NULL)
+			//d->avl->removepath(temp);
+			//temp = d->avl->getroot();
+			if (time->isActive())
 			{
-				temp = temp->leftchild;
-				d->avl->setpath(temp);
-			}
-			else
-			{
-				if (time->isActive())
-				{
-					time->stop();
-					disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-				}
-				d->avl->removepath(temp);
-				temp = d->avl->getroot();
-				
+				time->stop();
+				disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
 			}
 		}
-		else if (sta->element.first > temp->element.first)
+		else
 		{
-			d->avl->removepath(temp);
-			if (temp->rightchild != NULL)
+			if (sta->element.first < temp->element.first)
 			{
-				temp = temp->rightchild;
-				d->avl->setpath(temp);
-			}
-			else
-			{
-				if (time->isActive())
-				{
-					time->stop();
-					disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
-				}
 				d->avl->removepath(temp);
-				temp = d->avl->getroot();
-				
+				if (temp->leftchild != NULL)
+				{
+					temp = temp->leftchild;
+					d->avl->setpath(temp);
+				}
+				else
+				{
+					d->avl->removepath(temp);
+					temp = d->avl->getroot();
+					if (time->isActive())
+					{
+						time->stop();
+						disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+					}
+					
+
+				}
+			}
+			else if (sta->element.first > temp->element.first)
+			{
+				d->avl->removepath(temp);
+				if (temp->rightchild != NULL)
+				{
+					temp = temp->rightchild;
+					d->avl->setpath(temp);
+				}
+				else
+				{
+					d->avl->removepath(temp);
+					temp = d->avl->getroot();
+					if (time->isActive())
+					{
+						time->stop();
+						disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+					}
+					
+
+				}
 			}
 		}
 	}
@@ -284,10 +461,12 @@ void mainwindow::searchclicked()
 		node* st = d->avl->Search(se);
 		if (st == NULL)
 		{
-			exit;
+			p->setModal(true);
+			p->show();
 		}
 		else
 		{
+			d->avl->removepath(temp);
 			d->update();
 			temp = d->avl->getroot();
 			d->avl->setpath(temp);
@@ -296,15 +475,85 @@ void mainwindow::searchclicked()
 			time->start(1000);
 			if (!time->isActive())
 			{
-				//time->stop();
 				disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
 			}
 		}
 	}
 	else if (d->avl->get_mode() == 1)
 	{
+		Temp(d->avl, d->avl->getroot());
 		QString se = find->text();
 		int num = se.toInt();
+		if (num <= 0)
+		{
+			p->setModal(true);
+			p->show();
+		}
+		else
+		{
+			node* st = d->avl->Search_(num);
+			if (st == NULL)
+			{
+				p->setModal(true);
+				p->show();
+			}
+			else
+			{
+				d->avl->removepath(temp);
+				d->update();
+				temp = d->avl->getroot();
+				d->avl->setpath(temp);
+				d->update();
+				connect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+				time->start(1000);
+				if (!time->isActive())
+				{
+					//time->stop();
+					disconnect(time, SIGNAL(timeout()), this, SLOT(searchtimer()));
+				}
+			}
+		}
+		
+	}
+}
+
+void mainwindow::ascendtimer()
+{
+	d->update();
+	
+	if (d->avl->succ(temp) != NULL)
+	{
+		d->avl->removepath(temp);
+		temp = d->avl->succ(temp);
+		d->avl->setpath(temp);
+	}
+	else
+	{
+		d->avl->removepath(temp);
+		temp = d->avl->getroot();
+		if (time->isActive())
+		{
+			time->stop();
+			disconnect(time, SIGNAL(timeout()), this, SLOT(ascendtimer()));
+		}
+	}
+}
+
+void mainwindow::ascendclicked()
+{
+	temp = d->avl->getroot();
+	while (temp&&temp->leftchild)
+	{
+		temp = temp->leftchild;
+	}
+	d->avl->setpath(temp);
+	d->update();
+	connect(time, SIGNAL(timeout()), this, SLOT(ascendtimer()));
+	time->start(1000);
+	if (!time->isActive())
+	{
+		
+		disconnect(time, SIGNAL(timeout()), this, SLOT(ascendtimer()));
 	}
 }
 
@@ -319,3 +568,23 @@ void mainwindow::btnclicked(int id)
 		d->avl->set_mode(1);
 	}
 }
+
+void mainwindow::mode_change(int id)
+{
+	if (id == 1)
+	{
+		d->avl->set_mode(0);
+	}
+	else if (id == 2)
+	{
+		d->avl->set_mode(1);
+	}
+}
+
+void mainwindow::tolgclikced(int id, bool status)
+{
+	mode_change(3 - id);
+	Temp(d->avl, d->avl->getroot());
+	d->update();
+}
+

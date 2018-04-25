@@ -46,7 +46,7 @@ public:
 	void setpath(node* t);
 	void removepath(node* t);
 	void setindex(node* t);
-	void Search_(int x);
+	node* Search_(int x);
 	void _Delete(int x);
 	friend void Temp(AVLtree* av, node* t);
 private:
