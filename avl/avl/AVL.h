@@ -10,7 +10,7 @@ class AVLtree
 {
 public:
     AVLtree();							//构造函数
-    void buildtree(QList<QString> key,int size);			//创建搜索树
+    void buildtree(QString key,int size);			//创建搜索树
     node* Search(QString _key);						//按关键字搜索
     node* _Search(int key);
     void Insert(QString _key);						//按关键字插入
@@ -25,12 +25,11 @@ public:
 	void r_rroll(node* t);						//RR旋转
 	void l_rroll(node* t);						//LR旋转
 	void r_lroll(node* t);						//RL旋转
-	void merge(AVLtree av);						//合并两棵AVL树
-    void divide(node* t,AVLtree &b);						//将一棵AVL树分裂
+	void merge(QList<QString>* a);						//合并两棵AVL树
+    void divide(QList<QString>* a);						//将一棵AVL树分裂
 	node* iterator(node* t, node* y);
 	void erase(int key);
 	node* max_right(node* t);
-    //node *Insert(node* tp);
     void getdivide(QString _key, node* t);
 	int getdiv(node* t);
     bool empty();
@@ -48,6 +47,8 @@ public:
 	void setindex(node* t);
 	node* Search_(int x);
 	void _Delete(int x);
+	int getop();
+	void setop(int);
 	friend void Temp(AVLtree* av, node* t);
 private:
 	node * root;
@@ -55,6 +56,7 @@ private:
 	int tsize;
 	int i_size;
 	int mode;
+	int op;
 };
 
 

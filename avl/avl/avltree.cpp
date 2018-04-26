@@ -6,15 +6,16 @@ AVLtree::AVLtree()
     root = NULL;
 	tsize = 0;
 	mode = 0;
+	op = 0;
 }
 
-void AVLtree::buildtree(QList<QString> key,int size)
+void AVLtree::buildtree(QString key,int size)
 {
     
     i_size = size;
     root = new node;
-    root->element.first = toint(key[0]);
-    root->element.second = key[0];
+    root->element.first = toint(key);
+    root->element.second = key;
     root->n_side = -1;
     root->divd = 0;
     root->leftchild = root->rightchild = NULL;
@@ -29,6 +30,16 @@ void AVLtree::buildtree(QList<QString> key,int size)
         Insert(key[i]);
     }*/
 
+}
+
+int AVLtree::getop()
+{
+	return op;
+}
+
+void AVLtree::setop(int i)
+{
+	op = i;
 }
 
 int AVLtree::set_mode(int a)
@@ -605,24 +616,15 @@ void AVLtree::Ascend(node* t)
     }
 }
 
-void AVLtree::merge(AVLtree av)
+void AVLtree::merge(QList<QString>* a)
 {
-//	int sizeb = 0;
-//	store headb;
-//    headb.contant = QString();
-//	headb.next = NULL;
-//	store* currentb = &headb;
-    QList<QString> bs;
-    Queue qu(av.gettsize());
-    node* t = av.root;
+    Queue qu(gettsize());
+    node* t = root;
     qu.createqueue();
     qu.push(t);
     while (qu.empty())
     {
-        //currentb->next = new store;
-        bs << t->element.second;
-        //currentb = currentb->next;
-        //sizeb++;
+        *a << t->element.second;
         if (t->leftchild != NULL)
         {
             qu.push(t->leftchild);
@@ -634,22 +636,10 @@ void AVLtree::merge(AVLtree av)
         qu.pop();
         t = qu.getqueue();
     }
-    //QList<QString> bs = new QString[sizeb];
-    //store* currentb_2 = headb.next;
-//	for (int i = 0; i < ; i++)
-//	{
-//		bs[i] = currentb_2->contant;
-//		currentb_2 = currentb_2->next;
-//	}
-    for (int i = 0; i < bs.size(); i++)
-    {
-        Insert(bs[i]);
-    }
 }
 
 void AVLtree::getdivide(QString _key,node* t)
 {
-    //int key=toint(_key);
     if (t)
     {
         getdivide(_key, t->leftchild);
@@ -664,39 +654,17 @@ void AVLtree::getdivide(QString _key,node* t)
     }
 }
 
-void AVLtree::divide(node* t, AVLtree &b)
+void AVLtree::divide(QList<QString>* a)
 {
-//	int sizea = 0, sizeb = 0;
-//	store heada;
-//	heada.contant = NULL;
-//	heada.next = NULL;
-//	store* currenta = &heada;
-//	store headb;
-//	headb.contant = NULL;
-//	headb.next = NULL;
-//	store* currentb = &headb;
-    QList<QString> as;
-    QList<QString> bs;
+	node* t = root;
     Queue qu(gettsize());
     qu.createqueue();
     qu.push(t);
     while (qu.empty())
     {
-        if (t->divd == 0)
-        {
-//			currenta->next = new store;
-//			currenta->next->contant = t->element.first;
-//			currenta = currenta->next;
-//			sizea++;
-            as<<t->element.second;
-        }
         if (t->divd == 1)
         {
-//			currentb->next = new store;
-//			currentb->next->contant = t->element.first;
-//			currentb = currentb->next;
-//			sizeb++;
-            bs<<t->element.second;
+            *a<<t->element.second;
         }
         if (t->leftchild != NULL)
         {
@@ -708,25 +676,6 @@ void AVLtree::divide(node* t, AVLtree &b)
         }
         qu.pop();
         t = qu.getqueue();
-    }
-//	int* a = new int[sizea];
-//	store* currenta_2 = heada.next;
-//	for (int i = 0; i < sizea; i++)
-//	{
-//		a[i] = currenta_2->contant;
-//		currenta_2 = currenta_2->next;
-//	}
-//	int* bs = new int[sizeb];
-//	store* currentb_2 = headb.next;
-//	for (int i = 0; i < sizeb; i++)
-//	{
-//		bs[i] = currentb_2->contant;
-//		currentb_2 = currentb_2->next;
-//	}
-    b.buildtree(bs,bs.size());
-    for (int i = 0; i < as.size(); i++)
-    {
-        Delete(as[i]);
     }
 }
 

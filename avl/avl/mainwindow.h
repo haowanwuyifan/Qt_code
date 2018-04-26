@@ -10,6 +10,7 @@
 #include<qdialog.h>
 #include<qlabel.h>
 #include<qprocess.h>
+#include <QVBoxLayout>
 class mainwindow : public QMainWindow
 {
 	Q_OBJECT
@@ -34,7 +35,10 @@ public:
 	DrawWidget* c;
 	DrawWidget *d;
 	DrawWidget* e;
+	QVBoxLayout *vlayout;
 	QTimer *time;
+	QTimer *time2;
+	QTimer *time3;
 	QDialog* p;
 	int tim;
 	node* temp;
@@ -53,6 +57,7 @@ private slots:
 	void initialclicked();
 	void searchclicked();
 	void ascendclicked();
+	void divideclicked();
 	void mergetimer();
 	void dividetimer();
 	void ascendtimer();
@@ -64,5 +69,5 @@ private slots:
 	void btnclicked(int id);
 	void restart();
 	void mergeclicked();
-	void divideclicked();
+
 };
