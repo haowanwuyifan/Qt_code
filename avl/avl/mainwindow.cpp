@@ -63,7 +63,7 @@ mainwindow::mainwindow(QWidget *parent)
 	divide = new QPushButton(this);
 	diin = new QLineEdit(this);
 	divide->setText("divide");
-	c = new DrawWidget();
+	c = new DrawWidget(this);
 	QHBoxLayout * hlayout3 = new QHBoxLayout;
 	hlayout3->addWidget(diin);
 	hlayout3->addWidget(divide);
@@ -90,9 +90,12 @@ mainwindow::mainwindow(QWidget *parent)
 	vlayout->addLayout(hlayout2);
 	vlayout->addLayout(hlayout5);
 	vlayout->addWidget(d);
+	vlayout->addWidget(c);
+	vlayout->addWidget(e);
 
 	time = new QTimer(this);
 	tim = 1;
+	
 	QWidget *widget = new QWidget(this);
 	widget->setLayout(vlayout);
 
@@ -173,6 +176,7 @@ void mainwindow::initialclicked()
 	else
 	{
 		d->avl->buildtree(a[0], size);
+		//temp = d->avl->getroot();
 		d->update();
 		if (a.size() > 1)
 		{
@@ -495,8 +499,12 @@ void mainwindow::searchclicked()
 			}
 			else
 			{
-				d->avl->removepath(temp);
-				d->update();
+				if (temp != NULL)
+				{
+					d->avl->removepath(temp);
+					d->update();
+					
+				}
 				temp = d->avl->getroot();
 				d->avl->setpath(temp);
 				d->update();
@@ -634,13 +642,13 @@ void mainwindow::dividetimer()
 		}
 		else
 		{
-			
+			tim = 1;
 			if (time->isActive())
 			{
 				time->stop();
 				disconnect(time, SIGNAL(timeout()), this, SLOT(dividetimer()));
 			}
-			tim = 1;
+			
 		}
 	//}
 	/*else if (d->avl->getop() == 1)
@@ -699,7 +707,7 @@ void mainwindow::divideclicked()
 		d->avl->Delete(a[0]);
 		Temp(d->avl, d->avl->getroot());
 		d->update();
-		c->show();
+		//c->show();
 		c->avl->buildtree(a[0], size);
 		c->update();
 		if (a.size() > 0)
