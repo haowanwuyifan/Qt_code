@@ -339,6 +339,17 @@ void AVLtree::erase(int key)
 					root = max_l;
 					t = NULL;
 				}
+				else
+				{
+					if (parent->n_side == 0)
+					{
+						parent->leftchild = max_l;
+					}
+					if (parent->n_side == 1)
+					{
+						parent->rightchild = max_l;
+					}
+				}
 			}
 			else
 			{
@@ -351,6 +362,7 @@ void AVLtree::erase(int key)
 				if (t == root)
 				{
 					root = max_l;
+					t = NULL;
 				}
 				else
 				{
@@ -371,6 +383,7 @@ void AVLtree::erase(int key)
             if (t == root)
             {
                 root = chil;
+				t = NULL;
             }
             else if (parent->n_side == 0)
             {
@@ -523,7 +536,7 @@ void AVLtree::Delete(QString _key)
 		}
         if (parent->balance == 1 || parent->balance == -1)
         {
-            return ;
+            return;
         }
         if (parent->balance == 2 || parent->balance == -2)
         {
@@ -664,7 +677,7 @@ void AVLtree::divide(QList<QString>* a)
     {
         if (t->divd == 1)
         {
-            *a<<t->element.second;
+            a->append(t->element.second);
         }
         if (t->leftchild != NULL)
         {

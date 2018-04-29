@@ -63,7 +63,7 @@ mainwindow::mainwindow(QWidget *parent)
 	divide = new QPushButton(this);
 	diin = new QLineEdit(this);
 	divide->setText("divide");
-	c = new DrawWidget(this);
+	c = new DrawWidget();
 	QHBoxLayout * hlayout3 = new QHBoxLayout;
 	hlayout3->addWidget(diin);
 	hlayout3->addWidget(divide);
@@ -90,8 +90,7 @@ mainwindow::mainwindow(QWidget *parent)
 	vlayout->addLayout(hlayout2);
 	vlayout->addLayout(hlayout5);
 	vlayout->addWidget(d);
-	vlayout->addWidget(c);
-	vlayout->addWidget(e);
+	
 
 	time = new QTimer(this);
 	tim = 1;
@@ -635,7 +634,7 @@ void mainwindow::dividetimer()
 	d->avl->divide(&a);
 	//if (d->avl->getop() == 0)
 	//{
-		if (tim < a.size())
+		if (!a.empty())
 		{
 			true_dividetimer(a);
 			tim++;
@@ -674,12 +673,23 @@ void mainwindow::true_dividetimer(QList<QString> a)
 {
 	//if (d->avl->getop() == 0)
 	//{
-		d->avl->Delete(a[tim]);
+		d->avl->Delete(a[0]);
 		Temp(d->avl, d->avl->getroot());
-		c->avl->Insert(a[tim]);
-		Temp(c->avl, c->avl->getroot());
 		d->update();
-		c->update();
+		if (tim == 0)
+		{
+			c->avl->buildtree(a[0], a.size());
+			Temp(c->avl, c->avl->getroot());
+			c->update();
+		}
+		else
+		{
+			c->avl->Insert(a[0]);
+			Temp(c->avl, c->avl->getroot());
+			c->update();
+		}
+		
+		
 	//}
 	/*else if (d->avl->getop() == 1)
 	{
@@ -700,18 +710,20 @@ void mainwindow::divideclicked()
 	}
 	else
 	{
-		d->avl->getdivide(din, d->avl->getroot());
+		tim = 0;
+		/*d->avl->getdivide(din, d->avl->getroot());
 		QList<QString> a;
 		d->avl->divide(&a);
 		int size = a.size();
 		d->avl->Delete(a[0]);
 		Temp(d->avl, d->avl->getroot());
-		d->update();
-		//c->show();
-		c->avl->buildtree(a[0], size);
-		c->update();
-		if (a.size() > 0)
-		{
+		d->update();*/
+		c->show();
+		this->setAttribute(Qt::WA_DeleteOnClose);
+		/*c->avl->buildtree(a[0], size);
+		c->update();*/
+		//if (a.size() > 0)
+		//{
 			connect(time, SIGNAL(timeout()), this, SLOT(dividetimer()));
 			//d->avl->setop(0);
 			time->start(1000);
@@ -720,19 +732,19 @@ void mainwindow::divideclicked()
 				//time->stop();
 				disconnect(time, SIGNAL(timeout()), this, SLOT(dividetimer()));
 			}
-		}
-		//c->avl->buildtree(a, size);
+		//}
+		//c->avl->buildtree(a[0], size);
 		//c->update();
 		//if (a.size() > 1)
 		//{
-		//	connect(time, SIGNAL(timeout()), this, SLOT(dividetimer()));
-		//	d->avl->setop(1);
-		//	time->start(1000);
-		//	if (!time->isActive())
-		//	{
-		//		//time->stop();
-		//		disconnect(time, SIGNAL(timeout()), this, SLOT(dividetimer()));
-		//	}
+			//connect(time, SIGNAL(timeout()), this, SLOT(dividetimer()));
+			//d->avl->setop(1);
+			//time->start(1000);
+			//if (!time->isActive())
+			//{
+			//	//time->stop();
+			//	disconnect(time, SIGNAL(timeout()), this, SLOT(dividetimer()));
+			//}
 		//}
 	}
 }
@@ -762,7 +774,7 @@ void mainwindow::mergetimer()
 	{
 		QList<QString> a;
 		e->avl->merge(&a);
-		if (tim < a.size())
+		if (!a.empty())
 		{
 			true_mergetimer(a);
 			tim++;
@@ -777,7 +789,7 @@ void mainwindow::mergetimer()
 			tim = 1;
 		}
 	}
-	else if (c->avl->getop() == -1)
+	/*else if (c->avl->getop() == -1)
 	{
 		QList<QString> a;
 		e->avl->merge(&a);
@@ -795,29 +807,32 @@ void mainwindow::mergetimer()
 				disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
 			}
 		}
-	}
+	}*/
 }
 
 void mainwindow::true_mergetimer(QList<QString> a)
 {
-	if (c->avl->getop() == 0)
+	if (e->avl->getop() == 0)
 	{
-		c->avl->Insert(a[tim]);
-		Temp(c->avl, c->avl->getroot());
-		c->update();
+		e->avl->Insert(a[tim]);
+		Temp(e->avl, e->avl->getroot());
+		e->update();
 	}
-	else if (c->avl->getop() == 1)
+	else if (e->avl->getop() == 1)
 	{
-		c->avl->Delete(a[tim]);
-		Temp(c->avl, c->avl->getroot());
-		c->update();
+		e->avl->Delete(a[0]);
+		Temp(e->avl, e->avl->getroot());
+		e->update();
+		d->avl->Insert(a[0]);
+		Temp(d->avl, d->avl->getroot());
+		d->update();
 	}
-	else if (c->avl->getop() == -1)
+	/*else if (c->avl->getop() == -1)
 	{
 		d->avl->Insert(a[tim]);
 		Temp(d->avl, d->avl->getroot());
 		d->update();
-	}
+	}*/
 }
 
 void mainwindow::mergeclicked()
@@ -846,13 +861,14 @@ void mainwindow::mergeclicked()
 				disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
 			}
 		}
-		QList<QString> a;
+		/*QList<QString> a;
 		e->avl->merge(&a);
 		e->avl->Delete(a[0]);
 		Temp(e->avl, e->avl->getroot());
-		d->update();
-		if (a.size() > 0)
-		{
+		d->update();*/
+		tim = 0;
+		//if (a.size() > 0)
+		//{
 			connect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
 			e->avl->setop(1);
 			time->start(1000);
@@ -861,21 +877,21 @@ void mainwindow::mergeclicked()
 				//time->stop();
 				disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
 			}
-		}
-		d->avl->Insert(a[0]);
-		Temp(d->avl, d->avl->getroot());
-		d->update();
-		if (a.size() > 1)
-		{
-			connect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
-			c->avl->setop(-1);
-			time->start(1000);
-			if (!time->isActive())
-			{
-				//time->stop();
-				disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
-			}
-		}
+		//}
+		//d->avl->Insert(a[0]);
+		//Temp(d->avl, d->avl->getroot());
+		//d->update();
+		//if (a.size() > 1)
+		//{
+		//	connect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
+		//	c->avl->setop(-1);
+		//	time->start(1000);
+		//	if (!time->isActive())
+		//	{
+		//		//time->stop();
+		//		disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
+		//	}
+		//}
 	}
 	
 }
