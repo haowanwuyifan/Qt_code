@@ -69,5 +69,5 @@ private slots:
 	void btnclicked(int id);
 	void restart();
 	void mergeclicked();
-
+	//void mergetimer_plus();
 };

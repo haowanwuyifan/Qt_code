@@ -73,7 +73,7 @@ mainwindow::mainwindow(QWidget *parent)
 	merinp = new QLineEdit(this);
 	merge->setText("merge");
 	connect(merge, SIGNAL(clicked()), this, SLOT(mergeclicked()));
-	e = new DrawWidget(this);
+	e = new DrawWidget();
 	QHBoxLayout * hlayout4 = new QHBoxLayout;
 	hlayout4->addWidget(merinp);
 	hlayout4->addWidget(merge);
@@ -751,7 +751,7 @@ void mainwindow::divideclicked()
 
 void mainwindow::mergetimer()
 {
-	if (c->avl->getop() == 0)
+	if (e->avl->getop() == 0)
 	{
 		QString t = merinp->text();
 		QList<QString> a = t.split(",");
@@ -762,15 +762,11 @@ void mainwindow::mergetimer()
 		}
 		else
 		{
-			tim = 1;
-			if (time->isActive())
-			{
-				time->stop();
-				disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
-			}
+			tim = 0;
+			e->avl->setop(1);
 		}
 	}
-	else if (c->avl->getop() == 1)
+	else if (e->avl->getop() == 1)
 	{
 		QList<QString> a;
 		e->avl->merge(&a);
@@ -781,12 +777,14 @@ void mainwindow::mergetimer()
 		}
 		else
 		{
+			tim = 1;
+			//connect(time, SIGNAL(timeout()), this, SLOT(mergetimer_plus()));
+			e->hide();
 			if (time->isActive())
 			{
 				time->stop();
 				disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
 			}
-			tim = 1;
 		}
 	}
 	/*else if (c->avl->getop() == -1)
@@ -866,17 +864,19 @@ void mainwindow::mergeclicked()
 		e->avl->Delete(a[0]);
 		Temp(e->avl, e->avl->getroot());
 		d->update();*/
-		tim = 0;
+		
 		//if (a.size() > 0)
 		//{
-			connect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
-			e->avl->setop(1);
-			time->start(1000);
-			if (!time->isActive())
-			{
-				//time->stop();
-				disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
-			}
+
+			//tim = 0;
+			//connect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
+			//e->avl->setop(1);
+			//time->start(1000);
+			//if (!time->isActive())
+			//{
+			//	//time->stop();
+			//	disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
+			//}
 		//}
 		//d->avl->Insert(a[0]);
 		//Temp(d->avl, d->avl->getroot());
@@ -895,3 +895,16 @@ void mainwindow::mergeclicked()
 	}
 	
 }
+
+//void mainwindow::mergetimer_plus()
+//{
+//	tim = 0;
+//	connect(time, SIGNAL(timeout()), this, SLOT(mergetimer()));
+//	e->avl->setop(1);
+//	time->start(1000);
+//	if (!time->isActive())
+//	{
+//		//time->stop();
+//		disconnect(time, SIGNAL(timeout()), this, SLOT(mergetimer_plus()));
+//	}
+//}

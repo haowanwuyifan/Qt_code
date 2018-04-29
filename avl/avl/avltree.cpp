@@ -633,21 +633,25 @@ void AVLtree::merge(QList<QString>* a)
 {
     Queue qu(gettsize());
     node* t = root;
+	if (t == NULL)
+	{
+		return;
+	}
     qu.createqueue();
     qu.push(t);
     while (qu.empty())
     {
-        *a << t->element.second;
-        if (t->leftchild != NULL)
-        {
-            qu.push(t->leftchild);
-        }
-        if (t->rightchild != NULL)
-        {
-            qu.push(t->rightchild);
-        }
-        qu.pop();
-        t = qu.getqueue();
+		a->append(t->element.second);
+		if (t->leftchild != NULL)
+		{
+			qu.push(t->leftchild);
+		}
+		if (t->rightchild != NULL)
+		{
+			qu.push(t->rightchild);
+		}
+		qu.pop();
+		t = qu.getqueue();
     }
 }
 
@@ -784,9 +788,7 @@ void AVLtree::updateDistanceToRoot(node* x)
         p = iterator(root, p);
         ++i;
     }
-
     x->distance_to_root = i ;
-
     Queue q(gettsize());
     q.createqueue();
     q.push(x);
