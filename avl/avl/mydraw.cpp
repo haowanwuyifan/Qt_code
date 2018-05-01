@@ -38,7 +38,6 @@ void DrawWidget::paintEvent(QPaintEvent *)
 			t = qu.getqueue();
 		}
 		t = avl->getroot();
-		//node* current = t;
 		Queue _qu(avl->gettsize());
 		_qu.createqueue();
 		_qu.push(t);
@@ -55,7 +54,7 @@ void DrawWidget::paintEvent(QPaintEvent *)
 			painter.drawEllipse(30 * t->horizontal_position, 100 * t->distance_to_root, 60, 60);
 			if (avl->get_mode() == 0)
 			{
-				painter.drawText(30 * t->horizontal_position + 20, 100 * t->distance_to_root + 30, t->element.second);
+				painter.drawText(30 * t->horizontal_position  + 20, 100 * t->distance_to_root  + 30, t->element.second);
 			}
 			else if (avl->get_mode() == 1)
 			{
