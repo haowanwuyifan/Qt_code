@@ -33,26 +33,29 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="train.cpp">
+    <ClCompile Include="competition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mytime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mytable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="linkChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="time.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="train.h">
+    <QtMoc Include="competition.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="mytable.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="train.qrc">
+    <QtRcc Include="competition.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
   </ItemGroup>
@@ -60,8 +63,17 @@
     <ClInclude Include="linkChain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="time.h">
+    <ClInclude Include="mytime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="competition.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="if_Posseidon_fork_movie_hero_greek_god_water_3151566.ico" />
   </ItemGroup>
 </Project>

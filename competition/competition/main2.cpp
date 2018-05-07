@@ -1,5 +1,5 @@
 #include"linkChain.h"
-#include<string>
+#include<QString>
 #include<iostream>
 #include<fstream>
 #include<cstdlib>
@@ -13,20 +13,19 @@ int main()
 	linkChain train;//火车
 	linkChain plane;//飞机
 	ifstream infile;
-	string file_name;
-	string theWay;//出行方式
+	QString file_name;
+	QString theWay;//出行方式
 	int theBHour,theBMinute;//开始时间2
 	int theEHour, theEMinute;//结束时间3
-	string theCTime;//消耗时间6
+	QString theCTime;//消耗时间6
 	double theMoney;//车票0
-	string theVechile;//列车班次1
-	string theCity1;//起始车站4
-	string theCity2;//终止车站5
+	QString theVechile;//列车班次1
+	QString theCity1;//起始车站4
+	QString theCity2;//终止车站5
 	char next;
 	char ans='N';
 	cout << "请输入火车文件名:\n";
-	cin >> file_name;
-	infile.open(file_name.c_str(), ios::in);
+	
 
 	if (infile.fail())
 	{
