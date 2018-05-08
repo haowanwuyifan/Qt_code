@@ -35,11 +35,19 @@ public:
 	DrawWidget* c;
 	DrawWidget *d;
 	DrawWidget* e;
+	QWidget* tem;
+	//QVBoxLayout* vlayout0;
 	QVBoxLayout *vlayout;
 	QTimer *time;
 	QTimer *time2;
 	QTimer *time3;
 	QDialog* p;
+	QPushButton* inse;
+	QLineEdit* infind;
+	QPushButton* inde;
+	QLineEdit* inre;
+	QHBoxLayout* hlayout6;
+	//QHBoxLayout* hlayout7;
 	int tim;
 	node* temp;
 	mainwindow(QWidget *parent = Q_NULLPTR);
@@ -48,7 +56,7 @@ public:
 	void true_deletetimer(QList<QString> a);
 	void true_mergetimer(QList<QString> a);
 	void true_dividetimer(QList<QString> a);
-	void mode_change(int id);
+	void true_indetimer(QList<QString> a);
 	int deabnormal(QList<QString> a);
 
 private slots:
@@ -58,6 +66,8 @@ private slots:
 	void searchclicked();
 	void ascendclicked();
 	void divideclicked();
+	void inseclicked();
+	void indeclicked();
 	void mergetimer();
 	void dividetimer();
 	void ascendtimer();
@@ -65,9 +75,11 @@ private slots:
 	void inserttimer();
 	void deletetimer();
 	void searchtimer();
+	void insetimer();
+	void indetimer();
 	void tolgclikced(int id, bool status);
 	void btnclicked(int id);
 	void restart();
 	void mergeclicked();
-	//void mergetimer_plus();
+	
 };
