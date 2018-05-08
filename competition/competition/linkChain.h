@@ -1,9 +1,11 @@
 #pragma once
-#include<string>
+#include<QString>
 #include<map>
-#include"time.h"
+#include"mytime.h"
+#include<qtablewidget.h>
+#include<qdialog.h>
+#pragma execution_character_set("utf-8")
 #define inf 100000.0;
-using std::string;
 using std::map;
 //表示消费数组，
 struct consume
@@ -20,8 +22,8 @@ struct element
 	//int byear, bmonth, bday;//也可以加上年月日，由于文件原因在此处忽略
 	int eHour,eMinute;//结束时间
 	//int eyear,emonth,eday;
-	string cTime;//消耗时间
- 	string vechile;//列车班次
+	QString cTime;//消耗时间
+ 	QString vechile;//列车班次
 	int flag;//标记前驱城市
 	element() :money(100000), flag(-1) {}
 };
@@ -31,8 +33,8 @@ struct element2
 	double money;//车票
 	int bHour, bMinute;//到达时间
 	int eHour, eMinute;//结束时间
-	string cTime;//消耗时间
-	string vechile;//列车班次
+	QString cTime;//消耗时间
+	QString vechile;//列车班次
 	int flag;//标记前驱城市
 	int sig;//作为标记，如果有多个城市有相同的票价，则对该城市进行标记
 	element2() :money(100000), flag(-1),sig(0){}
@@ -49,14 +51,14 @@ struct chainNode
 {
 	//成员变量
 	element* cost;//代表距离，时间，金钱等消耗的动态数组,代表每个机场或火车站的飞机或火车数量
-	string city;//城市
+	QString city;//城市
 	chainNode* next;
 //	int num;
 	int muse;//未用空间
 	int used;//已用空间
 	//方法
 	chainNode(){}
-	chainNode(element*& cost, const string& city,int theMuse,int theUsed)
+	chainNode(element*& cost, const QString& city,int theMuse,int theUsed)
 	{
 		muse = theMuse; used = theUsed;
 		cost = new element[muse];
@@ -65,7 +67,7 @@ struct chainNode
 		this->muse = muse;
 		this->used = used;
 	}
-	chainNode(element*& cost, const string& city,int theMuse,int theUsed, chainNode* next)
+	chainNode(element*& cost, const QString& city,int theMuse,int theUsed, chainNode* next)
 	{
 		muse = theMuse; used = theUsed;
 		cost = new element[muse];
@@ -87,28 +89,32 @@ struct alist
 class linkChain
 {
 public:
-	linkChain(int theCapacity=800);
+	linkChain(int theCapacity = 800);
 	linkChain(const linkChain& theLinkChain);
 	~linkChain();
 
+	
 	void changeArray1();//改变数组长度
 	bool empty();//判断是否为空
 	int getSize();//城市数量
 	//城市之间相连，唯一对应的航班可能不存在
-	bool checkEdge(string city1, string city2);//城市之间的边是否存在（广度优先搜索）
-	bool searchCity(string theCity);//判断城市是否存在
-	bool checkTransport(string city1, string city2, string theVechile, int theBHour,int theBMinute);//检查该班次在某一时刻是否存在
-	void searchRoute(string city1, string city2);//寻找两城市之间的直达路线并输出；
-	void eraseEdge(string city1,string city2);//删除城市之间的边
-	void eraseTransport(string city1, string city2, int theBHour, int theBMinute,string theVechile);//删除某一班列车或飞机
-	void insertEdge(string city1,string city2, int theBHour, int theBMinute, int theEHour, int theEMinute, 
-		string theCtime, double theMoney, string theVechile);//增加城市
-	void Dijkstra(string city1, string city2,int select);//起点，终点
+	bool checkEdge(QString city1, QString city2);//城市之间的边是否存在（广度优先搜索）
+	bool searchCity(QString theCity);//判断城市是否存在
+	bool checkTransport(QString city1, QString city2, QString theVechile, int theBHour,int theBMinute);//检查该班次在某一时刻是否存在
+	void searchRoute(QString city1, QString city2,QTableWidget *table,QDialog *p2);//寻找两城市之间的直达路线并输出；
+	void eraseEdge(QString city1,QString city2);//删除城市之间的边
+	void eraseTransport(QString city1, QString city2, int theBHour, int theBMinute,QString theVechile);//删除某一班列车或飞机
+	void insertEdge(QString city1,QString city2, int theBHour, int theBMinute, int theEHour, int theEMinute, 
+		QString theCtime, double theMoney, QString theVechile);//增加城市
+	void Dijkstra(QString city1, QString city2,int select, QDialog *p3);//起点，终点
 	bool full();//判断消费矩阵是否无法继续插入
-	void searchPath(string city1,string city2,int select);
+	void searchPath(QString city1,QString city2,int select, QTableWidget *table, QString &res);
 	bool Bfull();//判断存储BFS的数组是否为空
-	string BFS(string city1,string city2);
-	void searchStore(string city1, string city2);
+	QString BFS(QString city1,QString city2);
+	void searchStore(QString city1, QString city2, QTableWidget *table, QString &res);
+	QString tostring(int);
+	QString tostring(double);
+	
 protected:
 	alist* cityArray;
 	int size;//城市数量
@@ -118,6 +124,6 @@ protected:
 	element2 *pathCity;//存储矩阵路径
 	//int* storeCity;
 	element3* storeCity;//存储广度优先搜索的城市；
-	map<string, int> m1;//城市与数组序号之间建立映射关系
-	map<int, string> m2;
+	map<QString, int> m1;//城市与数组序号之间建立映射关系
+	map<int, QString> m2;
  };

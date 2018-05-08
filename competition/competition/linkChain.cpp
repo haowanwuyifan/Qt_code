@@ -1,11 +1,10 @@
 #include "linkChain.h"
 #include<iostream>
-#include<string>
+#include<QString>
 #include<cstdlib>
 #include<queue>
 #include<stack>
 #include<iomanip>
-using std::string;
 using std::queue;
 using std::stack;
 using std::cout;
@@ -17,7 +16,7 @@ void changeArray2(element*& array, int theSize, int& theCapacity)
 {
 	if (theSize > theCapacity)
 	{
-		cout << "Error!"<<"Your size"<<"("<<theSize<<")"<<">"<<"your capacity"<<"("<<theCapacity<<")"<<", theSize must be < theCapacity";
+		//cout << "Error!"<<"Your size"<<"("<<theSize<<")"<<">"<<"your capacity"<<"("<<theCapacity<<")"<<", theSize must be < theCapacity";
 		system("pause");
 	}
 	theCapacity = 2 * theCapacity;
@@ -38,6 +37,20 @@ void changeArray2(element*& array, int theSize, int& theCapacity)
 	array = temp;
 }
 }
+
+
+QString linkChain::tostring(int a)
+{
+	QString s = QString::number(a);
+	return s;
+}
+
+QString linkChain::tostring(double a)
+{
+	QString s = QString::number(a);
+	return s;
+}
+
 //改变邻接链表左侧数组长度
 void linkChain::changeArray1()
 {
@@ -88,25 +101,6 @@ void linkChain::changeArray1()
 	}
 	for (int i = size; i < capacity; i++)
 		cityArray1[i].to.next = NULL;
-	/*for (int i = 0; i <capacity/2; i++)//函数初始位置加了1000，应该减掉
-	{
-		if (cityArray[i].to.next == NULL)
-			delete[] cityArray[i].to.next;
-		else
-		{
-			chainNode* p = cityArray[i].to.next;
-			while (p != NULL)
-			{
-				chainNode* nextNode = p->next;
-				delete p;
-				p = nextNode;
-			}
-		}
-	}
-	//删除左侧数组
-	delete[] cityArray;*/
-
-
 	cityArray = new alist[capacity];
 	for (int i = 0; i <size; i++)
 	{
@@ -261,7 +255,7 @@ int linkChain::getSize()
 		return size;
 }
 //检查数组中是否有该城市
-bool linkChain::searchCity(string theCity)
+bool linkChain::searchCity(QString theCity)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -271,10 +265,10 @@ bool linkChain::searchCity(string theCity)
 	return false;
 }
 //检查两城市之间是否存在路线,广度优先搜索
-bool linkChain::checkEdge(string city1, string city2)
+bool linkChain::checkEdge(QString city1, QString city2)
 {
 	queue<int> reg;//存储将标记flag变为0的点，在最后要再转为1；
-	queue<string> a;
+	queue<QString> a;
 	int i = 0;
 	for (i; i < size; i++)
 	{
@@ -362,7 +356,7 @@ bool linkChain::checkEdge(string city1, string city2)
 	}
 }
 //检查城市之间是否存在直达的列车，方便以后添加车辆
-bool linkChain::checkTransport(string city1, string city2, string theVechile, int theBHour, int theBMinute)
+bool linkChain::checkTransport(QString city1, QString city2, QString theVechile, int theBHour, int theBMinute)
 {
 	if (city1 == city2)
 	{
@@ -405,12 +399,14 @@ bool linkChain::checkTransport(string city1, string city2, string theVechile, in
 		return false;
 }
 //搜索直达路径
-void linkChain::searchRoute(string city1, string city2)
+void linkChain::searchRoute(QString city1, QString city2,QTableWidget *table, QDialog *p2)
 {
-	cout << "  列次  " << "  出发时间  " << "  到达时间  " << "  耗时  " << "  出发地  " << "  目的地  " << "  车票  \n";
+	//cout << "  列次  " << "  出发时间  " << "  到达时间  " << "  耗时  " << "  出发地  " << "  目的地  " << "  车票  \n";
 	int i = 0;
 	int t = 0;
-	for(;i<size;i++)
+	//table->clear();
+	for (; i < size; i++)
+	{
 		if (cityArray[i].to.city == city1)
 		{
 			chainNode* p = cityArray[i].to.next;
@@ -418,10 +414,18 @@ void linkChain::searchRoute(string city1, string city2)
 			{
 				if (p->city == city2)
 				{
+
 					for (int j = 0; j < p->used; j++)
 					{
-						cout << "  "<<p->cost[j].vechile << "   " << p->cost[j].bHour << ":" << p->cost[j].bMinute << "   " << p->cost[j].eHour << ":" << p->cost[j].eMinute
-							<< "   " << p->cost[j].cTime << "   " << city1 << "   " <<city2<<"   "<<p->cost[j].money << "\n";
+						table->setItem(j, 0, new QTableWidgetItem(p->cost[j].vechile));
+						table->setItem(j, 1, new QTableWidgetItem(tostring(p->cost[j].bHour) + ":" + tostring(p->cost[j].bMinute)));
+						table->setItem(j, 2, new QTableWidgetItem(tostring(p->cost[j].eHour) + ":" + tostring(p->cost[j].eMinute)));
+						table->setItem(j, 3, new QTableWidgetItem(p->cost[j].cTime));
+						table->setItem(j, 4, new QTableWidgetItem(city1));
+						table->setItem(j, 5, new QTableWidgetItem(city2));
+						table->setItem(j, 6, new QTableWidgetItem(tostring(p->cost[j].money)));
+						/*cout << "  "<<p->cost[j].vechile << "   " << p->cost[j].bHour << ":" << p->cost[j].bMinute << "   " << p->cost[j].eHour << ":" << p->cost[j].eMinute
+						<< "   " << p->cost[j].cTime << "   " << city1 << "   " <<city2<<"   "<<p->cost[j].money << "\n";*/
 					}
 					break;
 				}
@@ -431,14 +435,15 @@ void linkChain::searchRoute(string city1, string city2)
 				t = 1;//编译器原因，p在跳出循环后会被释放，在接下来的判断中无法利用p指针；
 			break;
 		}
+	}
 	if (i == size ||  t== 1)
 	{
-		cout << "\n找不到直达路径。\n";
-		cout << "您可以选择其他中转方案。\n";
+		p2->setModal(true);
+		p2->show();
 	}
 }
 //删除两个城市
-void linkChain::eraseEdge(string city1,string city2)
+void linkChain::eraseEdge(QString city1,QString city2)
 {
 	//判断城市是否存在
 	if (!checkEdge(city1, city2))
@@ -478,8 +483,8 @@ void linkChain::eraseEdge(string city1,string city2)
 	}
 }
 //插入路径
-void linkChain::insertEdge(string city1, string city2, int theBHour, int theBMinute, int theEHour, int theEMinute, 
-	                        string theCtime,double theMoney,string theVechile)
+void linkChain::insertEdge(QString city1, QString city2, int theBHour, int theBMinute, int theEHour, int theEMinute, 
+	                        QString theCtime,double theMoney,QString theVechile)
 {
 	element* thecost;
 		int i = 0;
@@ -517,7 +522,7 @@ void linkChain::insertEdge(string city1, string city2, int theBHour, int theBMin
 				if (theNode->cost[j].vechile == theVechile && theNode->cost[j].bHour == theBHour && theNode->cost[j].bMinute == theBMinute
 					&& theNode->cost[j].eHour == theEHour && theNode->cost[j].eMinute == theEMinute && theNode->cost[j].money == theMoney)
 				{//当重复时，确定是否接着输入,由于爬取的数据重复内容过多，就不进行判断，默认跳过
-					cout << "The rout " << theVechile << " from " << city1 << " to " << city2 << " has been exited\n";
+					//qDebug() << "The rout " << theVechile << " from " << city1 << " to " << city2 << " has been exited\n";
 					break;
 					/*cout << "\n" << "Go on?(Y/N)";
 					std::cin >> ans;
@@ -587,7 +592,7 @@ void linkChain::insertEdge(string city1, string city2, int theBHour, int theBMin
 		}
 }
 //删除路径
-void linkChain::eraseTransport(string city1, string city2, int theBHour, int theBMinute, string theVechile)
+void linkChain::eraseTransport(QString city1, QString city2, int theBHour, int theBMinute, QString theVechile)
 {
 	if (checkTransport(city1, city2, theVechile, theBHour, theBMinute))
 	{
@@ -639,7 +644,7 @@ bool linkChain::full()
 	return true;
 }
 //寻找最短消耗路线
-void linkChain::searchPath(string city1,string city2,int select)
+void linkChain::searchPath(QString city1,QString city2,int select, QTableWidget *table, QString &res)
 {
 	int* tempPath;
 	tempPath = new int[size];
@@ -656,15 +661,26 @@ void linkChain::searchPath(string city1,string city2,int select)
 
 	if (select == 1)
 	{
-		cout << "总消费为：" << costCity[temp2].value << "元\n";
-		cout << "列次\t" << "出发时间\t" << "到达时间\t" << "耗时\t" << "出发地\t" << "目的地\t" << "车票（元）\n";
+		int kk = 0;
+		//cout << "总消费为：" << costCity[temp2].value << "元\n";
+		res = "总消费为："+QString::number(costCity[temp2].value)+ "元";
+		//cout << "列次\t" << "出发时间\t" << "到达时间\t" << "耗时\t" << "出发地\t" << "目的地\t" << "车票（元）\n";
 		for (int i = tot; i > 0; --i)
 		{
 				int k = tempPath[i - 1];
+				//table->clear();
 				if (pathCity[k].sig == 0)
 				{
-					cout << pathCity[k].vechile << "\t" << pathCity[k].bHour << ":" << pathCity[k].bMinute << "\t" << pathCity[k].eHour << ":" <<
-						pathCity[k].eMinute << "\t" << pathCity[k].cTime << "\t" << m2[tempPath[i]] << "\t" << m2[k] << "\t" << pathCity[k].money << "\n";
+					table->setItem(kk, 0, new QTableWidgetItem(pathCity[k].vechile));
+					table->setItem(kk, 1, new QTableWidgetItem(tostring(pathCity[k].bHour) + ":" + tostring(pathCity[k].bMinute)));
+					table->setItem(kk, 2, new QTableWidgetItem(tostring(pathCity[k].eHour) + ":" + tostring(pathCity[k].eMinute)));
+					table->setItem(kk, 3, new QTableWidgetItem(pathCity[k].cTime));
+					table->setItem(kk, 4, new QTableWidgetItem(m2[tempPath[i]]));
+					table->setItem(kk, 5, new QTableWidgetItem(m2[k]));
+					table->setItem(kk, 6, new QTableWidgetItem(tostring(pathCity[k].money)));
+					kk++;
+					/*cout << pathCity[k].vechile << "\t" << pathCity[k].bHour << ":" << pathCity[k].bMinute << "\t" << pathCity[k].eHour << ":" <<
+						pathCity[k].eMinute << "\t" << pathCity[k].cTime << "\t" << m2[tempPath[i]] << "\t" << m2[k] << "\t" << pathCity[k].money << "\n";*/
 				}
 				else
 				{
@@ -675,41 +691,83 @@ void linkChain::searchPath(string city1,string city2,int select)
 						{
 							for (int j = 0; j < p->used; j++)
 							{
-								if(p->cost[j].money==pathCity[k].money)
-								cout << p->cost[j].vechile << "\t" << p->cost[j].bHour << ":" << p->cost[j].bMinute
+								if (p->cost[j].money == pathCity[k].money)
+								{
+									table->setItem(kk, 0, new QTableWidgetItem(p->cost[j].vechile));
+									table->setItem(kk, 1, new QTableWidgetItem(tostring(p->cost[j].bHour) + ":" + tostring(p->cost[j].bMinute)));
+									table->setItem(kk, 2, new QTableWidgetItem(tostring(p->cost[j].eHour) + ":" + tostring(p->cost[j].eMinute)));
+									table->setItem(kk, 3, new QTableWidgetItem(p->cost[j].cTime));
+									table->setItem(kk, 4, new QTableWidgetItem(m2[tempPath[i]]));
+									table->setItem(kk, 5, new QTableWidgetItem(m2[k]));
+									table->setItem(kk, 6, new QTableWidgetItem(tostring(p->cost[j].money)));
+									kk++;
+								}
+								/*cout << p->cost[j].vechile << "\t" << p->cost[j].bHour << ":" << p->cost[j].bMinute
 									<< "\t" << p->cost[j].eHour << ":" <<
 									p->cost[j].eMinute << "\t" << p->cost[j].cTime << "\t" << m2[tempPath[i]]
-									<< "\t" << m2[k] << "\t" << p->cost[j].money << "\n";
+									<< "\t" << m2[k] << "\t" << p->cost[j].money << "\n";*/
 							}
 						}
 						p = p->next;
 					}
 				}
 				if (i - 1 > 0)
-					cout << "                          " << "转\n";
+				{
+					QTableWidgetItem *items = new QTableWidgetItem("转");
+					table->setItem(kk, 5, items);
+					kk++;
+				}
+					
 		}
+		QTableWidgetItem *item = new QTableWidgetItem(res);
+		table->setItem(kk, 3, item);
+		table->resizeColumnsToContents();
+		table->resizeRowsToContents();
+		
 	}
 	else if (select == 2)
 	{
+		int kk = 0;
 		int value=costCity[temp2].value;
 		int tempMinute = (int)(value)%60;
 		int pretempHour =(int)((value - tempMinute)/60);
 		int tempHour = (int)(pretempHour) % 24;
 		int tempDay = (int)((pretempHour - tempHour) / 24);
-		cout << "总耗时为：" << tempDay<<"天"<<tempHour << "时" << tempMinute << "分\n";
-		cout << "列次\t" << "出发时间\t" << "到达时间\t" << "耗时\t" << "出发地\t" << "目的地\t" << "车票（元）\n";
+		//cout << "总耗时为：" << tempDay<<"天"<<tempHour << "时" << tempMinute << "分\n";
+		//cout << "列次\t" << "出发时间\t" << "到达时间\t" << "耗时\t" << "出发地\t" << "目的地\t" << "车票（元）\n";
+		//table->clear();
+		res = "总耗时为：" + QString::number(tempDay) + "天" + QString::number(tempHour) + "时" + QString::number(tempMinute) + "分";
 		for (int i = tot; i > 0; --i)
 		{
 				int k = tempPath[i - 1];
-				cout << pathCity[k].vechile << "\t" << pathCity[k].bHour << ":" << pathCity[k].bMinute << "\t" << pathCity[k].eHour << ":" <<
-					pathCity[k].eMinute << "\t" << pathCity[k].cTime << "\t" << m2[tempPath[i]] << "\t" << m2[k] << "\t" << pathCity[k].money << "\n";
-				if(i-1>0)
-				cout << "                          " << "转\n";
+				table->setItem(kk, 0, new QTableWidgetItem(pathCity[k].vechile));
+				table->setItem(kk, 1, new QTableWidgetItem(tostring(pathCity[k].bHour) + ":" + tostring(pathCity[k].bMinute)));
+				table->setItem(kk, 2, new QTableWidgetItem(tostring(pathCity[k].eHour) + ":" + tostring(pathCity[k].eMinute)));
+				table->setItem(kk, 3, new QTableWidgetItem(pathCity[k].cTime));
+				table->setItem(kk, 4, new QTableWidgetItem(m2[tempPath[i]]));
+				table->setItem(kk, 5, new QTableWidgetItem(m2[k]));
+				table->setItem(kk, 6, new QTableWidgetItem(tostring(pathCity[k].money)));
+				kk++;
+				/*cout << pathCity[k].vechile << "\t" << pathCity[k].bHour << ":" << pathCity[k].bMinute << "\t" << pathCity[k].eHour << ":" <<
+					pathCity[k].eMinute << "\t" << pathCity[k].cTime << "\t" << m2[tempPath[i]] << "\t" << m2[k] << "\t" << pathCity[k].money << "\n";*/
+				if (i - 1 > 0)
+				{
+					QTableWidgetItem *items = new QTableWidgetItem("转");
+					table->setItem(kk, 5, items);
+					kk++;
+				}
+				//cout << "                          " << "转\n";
 		}
+		
+		QTableWidgetItem *item = new QTableWidgetItem(res);
+		table->setItem(kk, 3, item);
+		table->resizeColumnsToContents();
+		table->resizeRowsToContents();
 	}
+
 }
 //迪杰特拉算法
-void linkChain::Dijkstra(string city1, string city2,int select)
+void linkChain::Dijkstra(QString city1, QString city2,int select, QDialog *p3)
 {
 	int i = 0;
 	for (; i < size; i++)
@@ -718,7 +776,8 @@ void linkChain::Dijkstra(string city1, string city2,int select)
 	//判断是否存在
 	if (i == size)
 	{
-		cout << "Cannot find this route!";
+		p3->setModal(true);
+		p3->show();
 		return;
 	}
 	//如果第二个城市没有插入左侧数组中，map映射会找不到相应的映射，所以在插入前需要判断，如果不存在需要建立映射
@@ -884,7 +943,7 @@ bool linkChain::Bfull()
 	return true;
 }
 //广度优先搜索找到最少转站次数
-/*void linkChain::BFS(string city1, string city2)
+/*void linkChain::BFS(QString city1, QString city2)
 {
 	queue<int> count;
 	int all=0;
@@ -968,7 +1027,7 @@ bool linkChain::Bfull()
 		count.push(all);
 	}
 }*/
-string linkChain::BFS(string city1, string city2)
+QString linkChain::BFS(QString city1, QString city2)
 {
 	if (city1 == city2)
 	{
@@ -977,8 +1036,8 @@ string linkChain::BFS(string city1, string city2)
 	else
 	{
 		queue<int> reg;
-		string nextCity;
-		queue<string> a;
+		QString nextCity;
+		queue<QString> a;
 		int i = 0;
 		for (i; i < size; i++)
 		{
@@ -1033,57 +1092,21 @@ string linkChain::BFS(string city1, string city2)
 	}
 }
 
-/*void linkChain::searchStore(string city1,string city2)
+void linkChain::searchStore(QString city1,QString city2, QTableWidget *table, QString &res)
 {
-	int* tempPath;
-	tempPath = new int[size];
-	int tot = 0;
-	int temp = m1[city2];
-	while (temp != m1[city1])
-	{
-		tempPath[tot] = temp;
-		tot++;
-		temp = storeCity[temp].sig;
-	}
-	tempPath[tot] = temp;
-	cout << "列次\t" << "出发时间\t" << "到达时间\t" << "耗时\t" << "出发地\t" << "目的地\t" << "车票（元）\n";
-	for (int i = tot; i > 0; --i)
-	{
-		int k = tempPath[i];
-		int t = tempPath[i - 1];
-	//	cout << m2[tempPath[i]]<<"                   "<<m2[t]<<"\n";
-		chainNode* p = cityArray[k].to.next;
-		while (p != NULL)
-		{
-			if (p->city == m2[t])
-			{
-				for(int j=0;j<p->used;j++)
-				cout << p->cost[j].vechile << "\t" << p->cost[j].bHour << ":" << p->cost[j].bMinute
-					<< "\t" << p->cost[j].eHour << ":" <<
-					p->cost[j].eMinute << "\t" << p->cost[j].cTime << "\t" << m2[k]
-					<< "\t" << m2[t] << "\t" << p->cost[j].money << "\n";
-			}
-			p = p->next;
-		}
-		if (i - 1>0)
-			cout << "                          " << "转\n";
-	}
-}
-*/
-
-void linkChain::searchStore(string city1,string city2)
-{
-	stack<string> tempPath;
-	string nextCity;
+	int kk = 0;
+	stack<QString> tempPath;
+	QString nextCity;
 	nextCity = city2;
 	tempPath.push(nextCity);
 	do {
 		nextCity=BFS(city1, nextCity);
 		tempPath.push(nextCity);
 	} while (tempPath.top() != city1);
-	string tempCity;
-	cout << "至少需要转" << tempPath.size()-1<<"站\n";
-	cout << "列次\t" << "出发时间\t" << "到达时间\t" << "耗时\t" << "出发地\t" << "目的地\t" << "车票（元）\n";
+	QString tempCity;
+	//cout << "至少需要转" << tempPath.size()-1<<"站\n";
+	res= "至少需要转" + QString::number(tempPath.size() - 1) + "站";
+	//cout << "列次\t" << "出发时间\t" << "到达时间\t" << "耗时\t" << "出发地\t" << "目的地\t" << "车票（元）\n";
 	while (nextCity!=city2)
 	{
 		tempCity = tempPath.top();
@@ -1092,17 +1115,37 @@ void linkChain::searchStore(string city1,string city2)
 		while (p != NULL)
 		{
 			nextCity = tempPath.top();
+			//table->clear();
 			if (p->city == nextCity)
 			{
-				for (int j = 0; j<p->used; j++)
-					cout << p->cost[j].vechile << "\t" << p->cost[j].bHour << ":" << p->cost[j].bMinute
+				for (int j = 0; j < p->used; j++)
+				{
+					table->setItem(kk, 0, new QTableWidgetItem(p->cost[j].vechile));
+					table->setItem(kk, 1, new QTableWidgetItem(tostring(p->cost[j].bHour) + ":" + tostring(p->cost[j].bMinute)));
+					table->setItem(kk, 2, new QTableWidgetItem(tostring(p->cost[j].eHour) + ":" + tostring(p->cost[j].eMinute)));
+					table->setItem(kk, 3, new QTableWidgetItem(p->cost[j].cTime));
+					table->setItem(kk, 4, new QTableWidgetItem(tempCity));
+					table->setItem(kk, 5, new QTableWidgetItem(nextCity));
+					table->setItem(kk, 6, new QTableWidgetItem(tostring(p->cost[j].money)));
+					kk++;
+				}
+					/*cout << p->cost[j].vechile << "\t" << p->cost[j].bHour << ":" << p->cost[j].bMinute
 					<< "\t" << p->cost[j].eHour << ":" <<
 					p->cost[j].eMinute << "\t" << p->cost[j].cTime << "\t" << tempCity
-					<< "\t" << nextCity << "\t" << p->cost[j].money << "\n";
+					<< "\t" << nextCity << "\t" << p->cost[j].money << "\n";*/
 			}
 			p = p->next;
 		}
-		if (nextCity!=city2)
-			cout << "                          " << "转\n";
+		
+		if (nextCity != city2)
+		{
+			table->setItem(kk, 5, new QTableWidgetItem("转"));
+			kk++;
+		}
+			/*cout << "                          " << "转\n";*/
 	}
+	QTableWidgetItem *item = new QTableWidgetItem(res);
+	table->setItem(kk, 3, item);
+	table->resizeColumnsToContents();
+	table->resizeRowsToContents();
 }

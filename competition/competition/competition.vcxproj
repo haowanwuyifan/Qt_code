@@ -113,21 +113,34 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="competition.cpp" />
     <ClCompile Include="linkChain.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main2.cpp" />
-    <ClCompile Include="time.cpp" />
-    <ClCompile Include="train.cpp" />
+    <ClCompile Include="mytable.cpp" />
+    <ClCompile Include="mytime.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="train.h" />
+    <QtMoc Include="competition.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="train.qrc" />
+    <QtRcc Include="competition.qrc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linkChain.h" />
-    <ClInclude Include="time.h" />
+    <ClInclude Include="resource.h" />
+    <QtMoc Include="mytable.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
+    </QtMoc>
+    <ClInclude Include="mytime.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="competition.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="if_Posseidon_fork_movie_hero_greek_god_water_3151566.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

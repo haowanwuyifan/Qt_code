@@ -1,4 +1,4 @@
-#include"time.h"
+#include"mytime.h"
 #include<cstdlib>
 #include<iostream>
 using std::exit;
