@@ -130,7 +130,14 @@
   <ItemGroup>
     <ClInclude Include="AVL.h" />
     <ClInclude Include="myqueue.h" />
+    <ClInclude Include="resource.h" />
     <QtMoc Include="mydraw.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="avl.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\吴一帆\Desktop\if_Jedi_Order_sigil_logo_star_wars_3151584.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
