@@ -69,11 +69,14 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="avl.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="C:\Users\吴一帆\Desktop\if_Jedi_Order_sigil_logo_star_wars_3151584.ico" />
+    <Image Include="if_Jedi_Order_sigil_logo_star_wars_3151584.ico" />
   </ItemGroup>
 </Project>

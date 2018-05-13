@@ -131,7 +131,7 @@ mainwindow::mainwindow(QWidget *parent)
 
 	p = new QDialog(this);
 	p->resize(300,200);
-	QPushButton* pb = new QPushButton(p);
+	pb = new QPushButton(p);
 	pb->setText("OK");
 	connect(pb, SIGNAL(clicked()), this, SLOT(restart()));
 	QLabel* pt = new QLabel(p);
@@ -164,6 +164,62 @@ int mainwindow::deabnormal(QList<QString> a)
 				}
 			}
 			
+		}
+	}
+	return 1;
+}
+
+int mainwindow::deabnormal2(QList<QString> a)
+{
+
+	for (int i = 0; i < a.size(); i++)
+	{
+		if (a[i].length() != 1)
+		{
+			return -1;
+		}
+		else if (d->avl->Search(a[i]) == NULL)
+		{
+			return -1;
+		}
+		else
+		{
+			for (int j = 0; j < i; j++)
+			{
+				if (a[i].contains(a[j], Qt::CaseInsensitive))
+				{
+					return -1;
+				}
+			}
+
+		}
+	}
+	return 1;
+}
+
+int mainwindow::deabnormal3(QList<QString> a)
+{
+
+	for (int i = 0; i < a.size(); i++)
+	{
+		if (a[i].length() != 1)
+		{
+			return -1;
+		}
+		else if (d->avl->Search_(a[i].toInt()) == NULL)
+		{
+			return -1;
+		}
+		else
+		{
+			for (int j = 0; j < i; j++)
+			{
+				if (a[i].contains(a[j], Qt::CaseInsensitive))
+				{
+					return -1;
+				}
+			}
+
 		}
 	}
 	return 1;
@@ -222,7 +278,6 @@ void mainwindow::initialclicked()
 			}
 		}
 	}
-		
 		
 }
 
@@ -312,7 +367,7 @@ void mainwindow::deleteclicked()
 {
 	QString _de = todelete->text();
 	QList<QString> a = _de.split(",");
-	if (deabnormal(a) == -1)
+	if (deabnormal2(a) == -1)
 	{
 		p->setModal(true);
 		p->show();
@@ -791,47 +846,39 @@ void mainwindow::mergeclicked()
 void mainwindow::inseclicked()
 {
 	QString se = infind->text();
-	if (se.length() != 1)
+	Temp(d->avl, d->avl->getroot());
+	//QString se = find->text();
+	int num = se.toInt();
+	if (num <= 0)
 	{
 		p->setModal(true);
 		p->show();
 	}
 	else
 	{
-		Temp(d->avl, d->avl->getroot());
-		//QString se = find->text();
-		int num = se.toInt();
-		if (num <= 0)
+		node* st = d->avl->Search_(num);
+		if (st == NULL)
 		{
 			p->setModal(true);
 			p->show();
 		}
 		else
 		{
-			node* st = d->avl->Search_(num);
-			if (st == NULL)
+			if (temp != NULL)
 			{
-				p->setModal(true);
-				p->show();
-			}
-			else
-			{
-				if (temp != NULL)
-				{
-					d->avl->removepath(temp);
-					d->update();
-
-				}
-				temp = d->avl->getroot();
-				d->avl->setpath(temp);
+				d->avl->removepath(temp);
 				d->update();
-				connect(time, SIGNAL(timeout()), this, SLOT(insetimer()));
-				time->start(1000);
-				if (!time->isActive())
-				{
-					//time->stop();
-					disconnect(time, SIGNAL(timeout()), this, SLOT(insetimer()));
-				}
+
+			}
+			temp = d->avl->getroot();
+			d->avl->setpath(temp);
+			d->update();
+			connect(time, SIGNAL(timeout()), this, SLOT(insetimer()));
+			time->start(1000);
+			if (!time->isActive())
+			{
+				//time->stop();
+				disconnect(time, SIGNAL(timeout()), this, SLOT(insetimer()));
 			}
 		}
 	}
@@ -900,9 +947,9 @@ void mainwindow::insetimer()
 void mainwindow::indeclicked()
 {
 	Temp(d->avl, d->avl->getroot());
-	QString _de = inde->text();
+	QString _de = inre->text();
 	QList<QString> a = _de.split(",");
-	if (deabnormal(a) == -1)
+	if (deabnormal3(a) == -1)
 	{
 		p->setModal(true);
 		p->show();
@@ -919,17 +966,24 @@ void mainwindow::indeclicked()
 				p->show();
 			}
 		}
-		d->avl->_Delete(n[0]);
-		Temp(d->avl, d->avl->getroot());
-		d->update();
-		if (a.size() > 0)
+		if (d->avl->_Delete(n[0]) == -1)
 		{
-			connect(time, SIGNAL(timeout()), this, SLOT(indetimer()));
-			time->start(1000);
-			if (!time->isActive())
+			p->setModal(true);
+			p->show();
+		}
+		else
+		{
+			Temp(d->avl, d->avl->getroot());
+			d->update();
+			if (a.size() > 0)
 			{
-				//time->stop();
-				disconnect(time, SIGNAL(timeout()), this, SLOT(indetimer()));
+				connect(time, SIGNAL(timeout()), this, SLOT(indetimer()));
+				time->start(1000);
+				if (!time->isActive())
+				{
+					//time->stop();
+					disconnect(time, SIGNAL(timeout()), this, SLOT(indetimer()));
+				}
 			}
 		}
 	}
@@ -957,7 +1011,14 @@ void mainwindow::indetimer()
 
 void mainwindow::true_indetimer(QList<QString> a)
 {
-	d->avl->_Delete(a[tim].toInt());
-	Temp(d->avl, d->avl->getroot());
-	d->update();
+	if (d->avl->_Delete(a[tim].toInt()) == -1)
+	{
+		p->setModal(true);
+		p->show();
+	}
+	else
+	{
+		Temp(d->avl, d->avl->getroot());
+		d->update();
+	}
 }

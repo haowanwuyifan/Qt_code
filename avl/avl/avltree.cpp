@@ -999,10 +999,14 @@ node* AVLtree::Search_(int x)
 	}
 }
 
-void AVLtree::_Delete(int x)
+int AVLtree::_Delete(int x)
 {
 	
 	node* t = Search_(x);
+	if (t == NULL)
+	{
+		return -1;
+	}
 	if (t != NULL)
 	{
 		int key = t->element.first;
@@ -1015,11 +1019,11 @@ void AVLtree::_Delete(int x)
 		}
 		if (root == NULL)
 		{
-			return;
+			return 0;
 		}
 		if (parent->balance == 1 || parent->balance == -1)
 		{
-			return;
+			return 0;
 		}
 		if (parent->balance == 2 || parent->balance == -2)
 		{
@@ -1099,5 +1103,6 @@ void AVLtree::_Delete(int x)
 				}
 			}
 		}
+		return 1;
 	}
 }

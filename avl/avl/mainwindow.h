@@ -47,6 +47,7 @@ public:
 	QPushButton* inde;
 	QLineEdit* inre;
 	QHBoxLayout* hlayout6;
+	QPushButton* pb;
 	//QHBoxLayout* hlayout7;
 	int tim;
 	node* temp;
@@ -58,6 +59,8 @@ public:
 	void true_dividetimer(QList<QString> a);
 	void true_indetimer(QList<QString> a);
 	int deabnormal(QList<QString> a);
+	int deabnormal2(QList<QString> a);
+	int deabnormal3(QList<QString> a);
 
 private slots:
 	void insertclicked();
