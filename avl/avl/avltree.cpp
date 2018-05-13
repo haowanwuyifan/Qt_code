@@ -911,6 +911,7 @@ void AVLtree::display()
 void AVLtree::setindex(node* t)
 {
 	int count = 0;
+	int count_ = 0;
 	if (t != NULL)
 	{
 		if (t->leftchild != NULL)
@@ -934,15 +935,33 @@ void AVLtree::setindex(node* t)
 				ct = _qu.getqueue();
 			}
 		}
+		if (t->rightchild != NULL)
+		{
+			node* ct = t->rightchild;
+			Queue _qu(gettsize());
+			_qu.createqueue();
+			_qu.push(ct);
+			while (_qu.empty())
+			{
+				count_++;
+				if (ct->leftchild != NULL)
+				{
+					_qu.push(ct->leftchild);
+				}
+				if (ct->rightchild != NULL)
+				{
+					_qu.push(ct->rightchild);
+				}
+				_qu.pop();
+				ct = _qu.getqueue();
+			}
+		}
 		node* parent = iterator(root, t);
 		if (parent != NULL && parent != t)
 		{
 			if (parent->n_side == 0)
 			{
-				if (t->element.first > root->element.first)
-				{
-					count = count + parent->index - count - 1;
-				}
+				count = parent->index - 1 - count_;
 			}
 			else if (parent->n_side == 1)
 			{
